@@ -6,12 +6,6 @@ public class Aircraft extends AbstractActor {
 
 	@Override
 	public Receive createReceive() {
-		// TODO Auto-generated method stub
-		return null;
+		return receiveBuilder().build();
 	}
-	
-	public enum AircraftMsg{
-		VANISH
-	}
-
 }

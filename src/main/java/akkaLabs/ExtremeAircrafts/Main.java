@@ -8,7 +8,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		ActorSystem system = ActorSystem.create("Sky");
-		ActorRef creator = system.actorOf(Props.create(AircraftCreator.class), "creator");
-		creator.tell(new AircraftCreator.AircraftCreationMessage(1000),ActorRef.noSender());
+		ActorRef orchestrator = system.actorOf(Props.create(Orchestrator.class), "orchestrator");
+		orchestrator.tell(new Orchestrator.OrchestrationMessage(10),ActorRef.noSender());
 	}
 }

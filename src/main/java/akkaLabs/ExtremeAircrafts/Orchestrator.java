@@ -6,12 +6,11 @@ import java.util.stream.IntStream;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 
-public class AircraftCreator extends AbstractActor {
+public class Orchestrator extends AbstractActor {
 
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 	private Map<Integer,ActorRef> aircraftNumToActor = new HashMap<>();
@@ -21,7 +20,7 @@ public class AircraftCreator extends AbstractActor {
 
 	@Override
 	public Receive createReceive() {
-		return receiveBuilder().match(AircraftCreationMessage.class, msg -> {
+		return receiveBuilder().match(OrchestrationMessage.class, msg -> {
 			int n = msg.getNumOfAircrafts();
 			if (aircrafts < n) {//add aircrafts
 				IntStream.range(aircrafts, n).forEach(i -> {
@@ -31,17 +30,17 @@ public class AircraftCreator extends AbstractActor {
 			}
 			else if(aircrafts > n){//remove aircrafts
 				IntStream.range(n, aircrafts).forEach(i -> {
-					logger.info("Sending 'VANISH' message to actor #"+i);
-					aircraftNumToActor.get(i).tell(Aircraft.AircraftMsg.VANISH,ActorRef.noSender());
+					logger.info("Stopping actor #"+i);
+					getContext().stop(aircraftNumToActor.get(i));
 				});
 			}
 		}).build();
 	}
 
-	public static class AircraftCreationMessage {
+	public static class OrchestrationMessage {
 		private int numOfAircrafts;
 
-		public AircraftCreationMessage(int numOfAircrafts) {
+		public OrchestrationMessage(int numOfAircrafts) {
 			this.numOfAircrafts = numOfAircrafts;
 		}
 
