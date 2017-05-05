@@ -20,7 +20,7 @@ public class Orchestrator extends AbstractActor {
 
 	@Override
 	public Receive createReceive() {
-		return receiveBuilder().match(OrchestrationMessage.class, msg -> {
+		return receiveBuilder().match(ModifyAircraftsMsg.class, msg -> {
 			int n = msg.getNumOfAircrafts();
 			if (aircrafts < n) {//add aircrafts
 				IntStream.range(aircrafts, n).forEach(i -> {
@@ -34,18 +34,23 @@ public class Orchestrator extends AbstractActor {
 					getContext().stop(aircraftNumToActor.get(i));
 				});
 			}
+		}).match(RequestAircraftsCount.class,msg->{
+			getSender().tell(aircrafts, self());
 		}).build();
 	}
-
-	public static class OrchestrationMessage {
+	
+	public static class ModifyAircraftsMsg{
 		private int numOfAircrafts;
 
-		public OrchestrationMessage(int numOfAircrafts) {
+		public ModifyAircraftsMsg(int numOfAircrafts) {
 			this.numOfAircrafts = numOfAircrafts;
 		}
 
 		public int getNumOfAircrafts() {
 			return numOfAircrafts;
 		}
+	}
+	
+	public static class RequestAircraftsCount{
 	}
 }
