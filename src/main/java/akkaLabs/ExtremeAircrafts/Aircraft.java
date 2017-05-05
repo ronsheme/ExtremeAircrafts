@@ -9,5 +9,9 @@ public class Aircraft extends AbstractActor {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public enum AircraftMsg{
+		VANISH
+	}
 
 }
