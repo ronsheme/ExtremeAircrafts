@@ -2,6 +2,12 @@
 .idea/
 *.iml
 
+#Extreme
+*.project
+*.classpath
+*.settings
+
 # Java
 *.class
 hs_err_pid*
+/target/
