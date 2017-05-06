@@ -17,14 +17,20 @@ public class Aircraft extends AbstractActor
 
 	private UUID uuid;
 	private Position position;
-
+	private double speed;
+	private double heading;
 	private SpatialContext spatialContext;
 
-	public Aircraft(UUID uuid, SpatialContext spatialContext)
-	{
+
+	public Aircraft(UUID uuid, double speed, SpatialContext spatialContext) {
+		this.speed = speed;
 		this.uuid = uuid;
 		this.spatialContext = spatialContext;
 		this.position = new Position();
+	}
+
+	private void advance() {
+		//TODO calculate new position using heading and speed and apply changePosition
 	}
 
 	private void changePosition(Position newPosition)

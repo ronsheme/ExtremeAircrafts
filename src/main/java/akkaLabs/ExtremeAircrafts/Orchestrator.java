@@ -28,6 +28,9 @@ public class Orchestrator extends AbstractActor
 	private final SpatialContext spatialContext;
 
 	private int aircrafts;
+	private static final int MIN_SPEED = 10;
+	private static final int MAX_SPEED = 200;
+	private static final int AUTO_UPDATE = 300;
 
 	private Router router;
 
@@ -52,7 +55,7 @@ public class Orchestrator extends AbstractActor
 						{
 							UUID uuid = UUID.randomUUID();
 							logger.info("Creating actor #" + i + " uuid:" + uuid.toString());
-							ActorRef newAircraft = getContext().actorOf(aircraftProps, uuid.toString());
+							ActorRef newAircraft = getContext().actorOf(this.aircraftProps, uuid.toString());
 							uuidToActor.put(uuid, newAircraft);
 
 							getContext().watch(newAircraft);
