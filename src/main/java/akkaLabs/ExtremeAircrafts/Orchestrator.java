@@ -5,40 +5,46 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircraftsCommand;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 public class Orchestrator extends AbstractActor
 {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 	private final Props aircraftProps = Props.create(Aircraft.class);
-	private Map<Integer, ActorRef> aircraftNumToActor = new HashMap<>();
+	private Map<UUID, ActorRef> uuidToActor = new HashMap<>();
 	private int aircrafts;
 
 	@Override
 	public Receive createReceive()
 	{
 		return receiveBuilder().
-				match(ModifyAircraftsMsg.class, msg ->
+				match(ModifyAircraftsCommand.class, msg ->
 				{
 					int n = msg.getNumOfAircrafts();
 					if (this.aircrafts < n)
 					{//add aircrafts
 						IntStream.range(this.aircrafts, n).forEach(i ->
 						{
-							logger.info("Creating actor #" + i);
-							aircraftNumToActor.put(i, getContext().actorOf(aircraftProps, String.valueOf(i)));
+							UUID uuid = UUID.randomUUID();
+							logger.info("Creating actor #" + i+" uuid:"+uuid.toString());
+							uuidToActor.put(uuid, getContext().actorOf(aircraftProps, uuid.toString()));
 						});
 					}
 					else if (this.aircrafts > n)
 					{//remove aircrafts
+						Iterator<UUID> uuidIterator = uuidToActor.keySet().iterator();
 						IntStream.range(n, this.aircrafts).forEach(i ->
 						{
-							logger.info("Stopping actor #" + i);
-							getContext().stop(aircraftNumToActor.get(i));
+							UUID uuid = uuidIterator.next();
+							logger.info("Stopping actor with uuid:" + uuid.toString());
+							getContext().stop(uuidToActor.get(uuid));
 						});
 					}
 					this.aircrafts = n;
@@ -53,22 +59,6 @@ public class Orchestrator extends AbstractActor
 		return this.aircrafts;
 	}
 
-	public static class ModifyAircraftsMsg
-	{
-		private int numOfAircrafts;
-
-		public ModifyAircraftsMsg(int numOfAircrafts)
-		{
-			this.numOfAircrafts = numOfAircrafts;
-		}
-
-		public int getNumOfAircrafts()
-		{
-			return numOfAircrafts;
-		}
-	}
-
-	public static class RequestAircraftsCount
-	{
+	public static class RequestAircraftsCount{
 	}
 }

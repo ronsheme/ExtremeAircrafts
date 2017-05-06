@@ -16,7 +16,7 @@ public class Aircraft extends AbstractActor
 	private Position position;
 
 	public Aircraft()
-	{
+	{//TODO: get this from orchestrator
 		this.uuid = UUID.randomUUID();
 	}
 
