@@ -1,7 +1,6 @@
 package akkaLabs.ExtremeAircrafts;
 
 import akka.actor.AbstractActor;
-import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
@@ -11,8 +10,6 @@ import akkaLabs.ExtremeAircrafts.position.Position;
 import java.util.UUID;
 
 import org.locationtech.spatial4j.context.SpatialContext;
-
-import com.google.inject.Guice;
 
 public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
