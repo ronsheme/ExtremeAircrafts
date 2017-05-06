@@ -17,7 +17,7 @@ public class Main
 		//		ActorSystem sky = injector.getInstance(ActorSystem.class);
 		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named("orchestrator")));
 		orchestrator.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
-		orchestrator.tell(new PositionChangeCommand(new Position(Math.random() * 30, Math.random() * 30, Math.random() * 30)), ActorRef.noSender());
+		orchestrator.tell(new PositionChangeCommand(new Position(100, -75, 15)), ActorRef.noSender());
 		//		sky.actorSelection("/user/*").fo
 	}
 }

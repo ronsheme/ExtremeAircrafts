@@ -3,10 +3,14 @@ package akkaLabs.ExtremeAircrafts;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.actor.Terminated;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.routing.RoundRobinRoutingLogic;
+import akka.routing.Router;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircraftsCommand;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
+import org.locationtech.spatial4j.context.SpatialContext;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,9 +21,23 @@ import java.util.stream.IntStream;
 public class Orchestrator extends AbstractActor
 {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
-	private final Props aircraftProps = Props.create(Aircraft.class);
-	private Map<UUID, ActorRef> uuidToActor = new HashMap<>();
+
+	private final Props aircraftProps;
+	private final Map<UUID, ActorRef> uuidToActor;
+
+	private final SpatialContext spatialContext;
+
 	private int aircrafts;
+
+	private Router router;
+
+	public Orchestrator(SpatialContext spatialContext)
+	{
+		this.spatialContext = spatialContext;
+		this.aircraftProps = Props.create(Aircraft.class, () -> new Aircraft(UUID.randomUUID(), this.spatialContext));
+		this.uuidToActor = new HashMap<>();
+		this.router = new Router(new RoundRobinRoutingLogic());
+	}
 
 	@Override
 	public Receive createReceive()
@@ -33,12 +51,16 @@ public class Orchestrator extends AbstractActor
 						IntStream.range(this.aircrafts, n).forEach(i ->
 						{
 							UUID uuid = UUID.randomUUID();
-							logger.info("Creating actor #" + i+" uuid:"+uuid.toString());
-							uuidToActor.put(uuid, getContext().actorOf(aircraftProps, uuid.toString()));
+							logger.info("Creating actor #" + i + " uuid:" + uuid.toString());
+							ActorRef newAircraft = getContext().actorOf(aircraftProps, uuid.toString());
+							uuidToActor.put(uuid, newAircraft);
+
+							getContext().watch(newAircraft);
+							this.router = this.router.addRoutee(newAircraft);
 						});
 					}
 					else if (this.aircrafts > n)
-					{//remove aircrafts
+					{    //remove aircrafts
 						Iterator<UUID> uuidIterator = uuidToActor.keySet().iterator();
 						IntStream.range(n, this.aircrafts).forEach(i ->
 						{
@@ -50,7 +72,8 @@ public class Orchestrator extends AbstractActor
 					this.aircrafts = n;
 				}).
 				match(RequestAircraftsCount.class, msg -> getSender().tell(this.aircrafts, self())).
-				match(PositionChangeCommand.class, cmd -> getContext().getChildren().iterator().forEachRemaining(ref -> ref.tell(cmd, getSender()))).
+				match(PositionChangeCommand.class, cmd -> this.router.route(cmd, getSender())).
+				match(Terminated.class, terminated -> this.router = router.removeRoutee(terminated.actor())).
 				build();
 	}
 
@@ -59,6 +82,7 @@ public class Orchestrator extends AbstractActor
 		return this.aircrafts;
 	}
 
-	public static class RequestAircraftsCount{
+	public static class RequestAircraftsCount
+	{
 	}
 }

@@ -25,9 +25,10 @@ public class ExtremeModule extends AbstractModule
 	protected void configure()
 	{
 		bind(ActorSystem.class).toInstance(this.sky);
-		bind(ActorRef.class).annotatedWith(Names.named("orchestrator")).toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class), "orchestrator"));
 		bind(SpatialContextFactory.class).toInstance(this.spatialContextFactory);
 		bind(SpatialContext.class).toInstance(this.spatialContext);
+		bind(ActorRef.class).annotatedWith(Names.named("orchestrator"))
+				.toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext)), "orchestrator"));
 	}
 
 }

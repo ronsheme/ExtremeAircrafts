@@ -10,10 +10,15 @@ public class Position
 	private double longitude;
 	private double altitude;
 
-	public Position(double latitude, double longitude, double altitude)
+	public Position()
 	{
-		this.latitude = latitude;
+		this(0, 0, 0);
+	}
+
+	public Position(double longitude, double latitude, double altitude)
+	{
 		this.longitude = longitude;
+		this.latitude = latitude;
 		this.altitude = altitude;
 	}
 
@@ -35,6 +40,6 @@ public class Position
 	@Override
 	public String toString()
 	{
-		return "Position{" + "latitude=" + latitude + ", longitude=" + longitude + ", altitude=" + altitude + '}';
+		return "{lat=" + latitude + ", long=" + longitude + ", alt=" + altitude + "}";
 	}
 }
