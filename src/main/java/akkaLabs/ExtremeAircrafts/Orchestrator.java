@@ -5,6 +5,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,30 +21,36 @@ public class Orchestrator extends AbstractActor
 	@Override
 	public Receive createReceive()
 	{
-		return receiveBuilder().match(ModifyAircraftsMsg.class, msg ->
-		{
-			int n = msg.getNumOfAircrafts();
-			if (this.aircrafts < n)
-			{//add aircrafts
-				IntStream.range(this.aircrafts, n).forEach(i ->
+		return receiveBuilder().
+				match(ModifyAircraftsMsg.class, msg ->
 				{
-					logger.info("Creating actor #" + i);
-					aircraftNumToActor.put(i, getContext().actorOf(aircraftProps, String.valueOf(i)));
-				});
-			}
-			else if (this.aircrafts > n)
-			{//remove aircrafts
-				IntStream.range(n, this.aircrafts).forEach(i ->
-				{
-					logger.info("Stopping actor #" + i);
-					getContext().stop(aircraftNumToActor.get(i));
-				});
-			}
-			this.aircrafts = n;
-		}).match(RequestAircraftsCount.class, msg ->
-		{
-			getSender().tell(this.aircrafts, self());
-		}).build();
+					int n = msg.getNumOfAircrafts();
+					if (this.aircrafts < n)
+					{//add aircrafts
+						IntStream.range(this.aircrafts, n).forEach(i ->
+						{
+							logger.info("Creating actor #" + i);
+							aircraftNumToActor.put(i, getContext().actorOf(aircraftProps, String.valueOf(i)));
+						});
+					}
+					else if (this.aircrafts > n)
+					{//remove aircrafts
+						IntStream.range(n, this.aircrafts).forEach(i ->
+						{
+							logger.info("Stopping actor #" + i);
+							getContext().stop(aircraftNumToActor.get(i));
+						});
+					}
+					this.aircrafts = n;
+				}).
+				match(RequestAircraftsCount.class, msg -> getSender().tell(this.aircrafts, self())).
+				match(PositionChangeCommand.class, cmd -> getContext().getChildren().iterator().forEachRemaining(ref -> ref.tell(cmd, getSender()))).
+				build();
+	}
+
+	public int getAircrafts()
+	{//for tests
+		return this.aircrafts;
 	}
 
 	public static class ModifyAircraftsMsg
@@ -63,9 +70,5 @@ public class Orchestrator extends AbstractActor
 
 	public static class RequestAircraftsCount
 	{
-	}
-	
-	public int getAircrafts(){//for tests
-		return this.aircrafts;
 	}
 }

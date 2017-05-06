@@ -18,7 +18,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-		<version.junit>3.8.1</version.junit>
+        <version.junit>4.12</version.junit>
 
 		<version.akka.scala>2.11</version.akka.scala>
 		<version.akka>2.5.1</version.akka>
@@ -35,7 +35,14 @@
 			<artifactId>guice</artifactId>
 			<version>4.0</version>
 		</dependency>
-		<!-- Testing dependencies -->
+
+        <dependency>
+            <groupId>org.locationtech.spatial4j</groupId>
+            <artifactId>spatial4j</artifactId>
+            <version>0.6</version>
+        </dependency>
+
+        <!-- Testing dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -46,6 +53,7 @@
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-testkit_${version.akka.scala}</artifactId>
 			<version>${version.akka}</version>
+            <scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

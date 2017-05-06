@@ -1,13 +1,12 @@
-#IntelliJ
+# IntelliJ shit
 .idea/
 *.iml
 
-#Extreme
+# Eclipse shit
 *.project
 *.classpath
 *.settings
 
-# Java
-*.class
+# Java shit
+target/
 hs_err_pid*
-/target/
