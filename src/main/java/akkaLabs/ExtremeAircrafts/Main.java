@@ -1,6 +1,7 @@
 package akkaLabs.ExtremeAircrafts;
 
 import akka.actor.ActorRef;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircraftsCommand;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import com.google.inject.Guice;
@@ -14,7 +15,7 @@ public class Main
 	{
 		Injector injector = Guice.createInjector(new ExtremeModule());
 		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named("orchestrator")));
-		orchestrator.tell(new Orchestrator.ModifyAircraftsMsg(10), ActorRef.noSender());
+		orchestrator.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
 		orchestrator.tell(new PositionChangeCommand(new Position(Math.random() * 30, Math.random() * 30, Math.random() * 30)), ActorRef.noSender());
 	}
 }

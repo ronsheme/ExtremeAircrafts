@@ -4,9 +4,12 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.testkit.TestActorRef;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircraftsCommand;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import junit.framework.Assert;
+
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,7 +29,7 @@ public class OrchestratorTest
 	@Test
 	public void createTest()
 	{
-		orch.tell(new Orchestrator.ModifyAircraftsMsg(10), ActorRef.noSender());
+		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
 		Assert.assertEquals(10, orch.underlyingActor().getAircrafts());
 	}
 }

@@ -5,6 +5,7 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircraftsCommand;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
 
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class Orchestrator extends AbstractActor
 	public Receive createReceive()
 	{
 		return receiveBuilder().
-				match(ModifyAircraftsMsg.class, msg ->
+				match(ModifyAircraftsCommand.class, msg ->
 				{
 					int n = msg.getNumOfAircrafts();
 					if (this.aircrafts < n)
@@ -53,22 +54,6 @@ public class Orchestrator extends AbstractActor
 		return this.aircrafts;
 	}
 
-	public static class ModifyAircraftsMsg
-	{
-		private int numOfAircrafts;
-
-		public ModifyAircraftsMsg(int numOfAircrafts)
-		{
-			this.numOfAircrafts = numOfAircrafts;
-		}
-
-		public int getNumOfAircrafts()
-		{
-			return numOfAircrafts;
-		}
-	}
-
-	public static class RequestAircraftsCount
-	{
+	public static class RequestAircraftsCount{
 	}
 }
