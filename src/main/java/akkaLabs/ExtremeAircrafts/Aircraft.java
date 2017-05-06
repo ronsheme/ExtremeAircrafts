@@ -1,7 +1,6 @@
 package akkaLabs.ExtremeAircrafts;
 
 import akka.actor.AbstractActor;
-import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
@@ -29,12 +28,10 @@ public class Aircraft extends AbstractActor
 	@Override
 	public Receive createReceive()
 	{
-		ActorSystem system = getContext().getSystem();
 		return receiveBuilder().
 				match(PositionChangeCommand.class, msg ->
 				{
 					logger.info("Rx new position: " + msg.getDestPosition());
-					//					System.out.println("Rx new position: " + msg.getDestPosition());
 					this.changePosition(msg.getDestPosition());
 					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, msg.getDestPosition()), getSelf());
 				}).
