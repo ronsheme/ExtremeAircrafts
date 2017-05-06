@@ -20,7 +20,13 @@ import java.util.stream.IntStream;
 
 public class Orchestrator extends AbstractActor
 {
+	private static final int MIN_SPEED = 10;
+	private static final int MAX_SPEED = 200;
+	private static final int AUTO_UPDATE = 300;
+
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
+
+	private Router router;
 
 	private final Props aircraftProps;
 	private final Map<UUID, ActorRef> uuidToActor;
@@ -28,16 +34,11 @@ public class Orchestrator extends AbstractActor
 	private final SpatialContext spatialContext;
 
 	private int aircrafts;
-	private static final int MIN_SPEED = 10;
-	private static final int MAX_SPEED = 200;
-	private static final int AUTO_UPDATE = 300;
-
-	private Router router;
 
 	public Orchestrator(SpatialContext spatialContext)
 	{
 		this.spatialContext = spatialContext;
-		this.aircraftProps = Props.create(Aircraft.class, () -> new Aircraft(UUID.randomUUID(), this.spatialContext));
+		this.aircraftProps = Props.create(Aircraft.class, () -> new Aircraft(UUID.randomUUID(), MIN_SPEED + Math.random() * MAX_SPEED, this.spatialContext));
 		this.uuidToActor = new HashMap<>();
 		this.router = new Router(new RoundRobinRoutingLogic());
 	}
