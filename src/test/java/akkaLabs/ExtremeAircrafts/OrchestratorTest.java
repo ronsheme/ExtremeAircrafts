@@ -13,23 +13,40 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class OrchestratorTest
-{
+public class OrchestratorTest {
 
-	private static TestActorRef<Orchestrator> orch;
+	private static ActorSystem sky;
 
+	private static TestActorRef<Orchestrator> getTestActorRef(String name){
+		return TestActorRef.create(sky, Props.create(Orchestrator.class),name);
+	}
+	
 	@BeforeClass
-	public static void SetUp()
-	{
+	public static void SetUp() {
 		Injector injector = Guice.createInjector(new ExtremeModule());
-		ActorSystem sky = injector.getInstance(ActorSystem.class);
-		orch = TestActorRef.create(sky, Props.create(Orchestrator.class), "orchestratosTest");
+		sky = injector.getInstance(ActorSystem.class);
 	}
 
 	@Test
-	public void createTest()
-	{
+	public void createTest() {
+		TestActorRef<Orchestrator> orch = getTestActorRef("createTest");
 		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
 		Assert.assertEquals(10, orch.underlyingActor().getAircrafts());
+	}
+
+	@Test
+	public void addTest() {
+		TestActorRef<Orchestrator> orch = getTestActorRef("addTest");
+		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
+		orch.tell(new ModifyAircraftsCommand(15), ActorRef.noSender());
+		Assert.assertEquals(15, orch.underlyingActor().getAircrafts());
+	}
+	
+	@Test
+	public void removeTest() {
+		TestActorRef<Orchestrator> orch = getTestActorRef("removeTest");
+		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
+		orch.tell(new ModifyAircraftsCommand(5), ActorRef.noSender());
+		Assert.assertEquals(5, orch.underlyingActor().getAircrafts());
 	}
 }
