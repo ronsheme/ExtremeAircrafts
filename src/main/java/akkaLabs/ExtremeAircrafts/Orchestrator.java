@@ -14,16 +14,23 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import org.locationtech.spatial4j.context.SpatialContext;
+
+import com.google.inject.Guice;
+
 public class Orchestrator extends AbstractActor
 {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
-	private final Props aircraftProps = Props.create(Aircraft.class);
 	private Map<UUID, ActorRef> uuidToActor = new HashMap<>();
 	private int aircrafts;
+	private static final int MIN_SPEED = 10;
+	private static final int MAX_SPEED = 200;
+	private static final int AUTO_UPDATE = 300;
 
 	@Override
 	public Receive createReceive()
 	{
+		SpatialContext spatialContext = Guice.createInjector(new ExtremeModule()).getInstance(SpatialContext.class);
 		return receiveBuilder().
 				match(ModifyAircraftsCommand.class, msg ->
 				{
@@ -34,7 +41,7 @@ public class Orchestrator extends AbstractActor
 						{
 							UUID uuid = UUID.randomUUID();
 							logger.info("Creating actor #" + i+" uuid:"+uuid.toString());
-							uuidToActor.put(uuid, getContext().actorOf(aircraftProps, uuid.toString()));
+							uuidToActor.put(uuid, getContext().actorOf(Props.create(Aircraft.class,uuid,MIN_SPEED + Math.random()*MAX_SPEED,spatialContext), uuid.toString()));
 						});
 					}
 					else if (this.aircrafts > n)

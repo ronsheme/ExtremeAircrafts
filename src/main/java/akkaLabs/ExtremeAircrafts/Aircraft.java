@@ -10,35 +10,41 @@ import akkaLabs.ExtremeAircrafts.position.Position;
 
 import java.util.UUID;
 
-public class Aircraft extends AbstractActor
-{
+import org.locationtech.spatial4j.context.SpatialContext;
+
+import com.google.inject.Guice;
+
+public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 	private UUID uuid;
 	private Position position;
+	private double speed;
+	private double heading;
+	private SpatialContext spatialContext;
 
-	public Aircraft()
-	{//TODO: get this from orchestrator
-		this.uuid = UUID.randomUUID();
+	public Aircraft(UUID uuid, double speed, SpatialContext spatialContext) {
+		this.speed = speed;
+		this.uuid = uuid;
+		this.spatialContext = spatialContext;
 	}
 
-	private void changePosition(Position newPosition)
-	{
+	private void advance() {
+		//TODO calculate new position using heading and speed and apply changePosition
+	}
+
+	private void changePosition(Position newPosition) {
 		this.position = newPosition;
 	}
 
 	@Override
-	public Receive createReceive()
-	{
-		ActorSystem system = getContext().getSystem();
-		return receiveBuilder().
-				match(PositionChangeCommand.class, msg ->
-				{
-					logger.info("Rx new position: " + msg.getDestPosition());
-					//					System.out.println("Rx new position: " + msg.getDestPosition());
-					this.changePosition(msg.getDestPosition());
-					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, msg.getDestPosition()), getSelf());
-				}).
-				match(AircraftPositionChangeEvent.class, evt -> logger.info("brother " + evt.getAircraftId() + " has changed its location to " + evt.getPosition() + " ... Good for him!")).
-				build();
+	public Receive createReceive() {
+		return receiveBuilder().match(PositionChangeCommand.class, msg -> {
+			logger.info("Rx new position: " + msg.getDestPosition());
+			// System.out.println("Rx new position: " + msg.getDestPosition());
+			this.changePosition(msg.getDestPosition());//TODO call advance instead
+			getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, msg.getDestPosition()),
+					getSelf());
+		}).match(AircraftPositionChangeEvent.class, evt -> logger.info("brother " + evt.getAircraftId()
+				+ " has changed its location to " + evt.getPosition() + " ... Good for him!")).build();
 	}
 }
