@@ -1,15 +1,31 @@
 package akkaLabs.ExtremeAircrafts;
 
-import com.google.inject.Inject;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.testkit.TestActorRef;
+import junit.framework.Assert;
 
 public class OrchestratorTest {
 
-	@Inject
-	public OrchestratorTest(){
-		
+	private static TestActorRef<Orchestrator> orch;
+
+	@BeforeClass
+	public static void SetUp(){
+		Injector injector = Guice.createInjector(new ExtremeModule());
+		ActorSystem sky = injector.getInstance(ActorSystem.class);
+		orch = TestActorRef.create(sky, Props.create(Orchestrator.class), "orchestratosTest");;		
 	}
 	
+	@Test
 	public void createTest(){
-		
+		orch.tell(new Orchestrator.ModifyAircraftsMsg(10), ActorRef.noSender());
+		Assert.assertEquals(10, orch.underlyingActor().getAircrafts());
 	}
 }

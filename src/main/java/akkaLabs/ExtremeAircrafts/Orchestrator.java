@@ -23,25 +23,26 @@ public class Orchestrator extends AbstractActor
 		return receiveBuilder().match(ModifyAircraftsMsg.class, msg ->
 		{
 			int n = msg.getNumOfAircrafts();
-			if (aircrafts < n)
+			if (this.aircrafts < n)
 			{//add aircrafts
-				IntStream.range(aircrafts, n).forEach(i ->
+				IntStream.range(this.aircrafts, n).forEach(i ->
 				{
 					logger.info("Creating actor #" + i);
 					aircraftNumToActor.put(i, getContext().actorOf(aircraftProps, String.valueOf(i)));
 				});
 			}
-			else if (aircrafts > n)
+			else if (this.aircrafts > n)
 			{//remove aircrafts
-				IntStream.range(n, aircrafts).forEach(i ->
+				IntStream.range(n, this.aircrafts).forEach(i ->
 				{
 					logger.info("Stopping actor #" + i);
 					getContext().stop(aircraftNumToActor.get(i));
 				});
 			}
+			this.aircrafts = n;
 		}).match(RequestAircraftsCount.class, msg ->
 		{
-			getSender().tell(aircrafts, self());
+			getSender().tell(this.aircrafts, self());
 		}).build();
 	}
 
@@ -62,5 +63,9 @@ public class Orchestrator extends AbstractActor
 
 	public static class RequestAircraftsCount
 	{
+	}
+	
+	public int getAircrafts(){//for tests
+		return this.aircrafts;
 	}
 }

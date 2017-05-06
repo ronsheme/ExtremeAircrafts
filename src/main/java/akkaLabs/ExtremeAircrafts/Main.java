@@ -1,15 +1,19 @@
 package akkaLabs.ExtremeAircrafts;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
 
 public class Main
 {
 	public static void main(String[] args)
 	{
-		ActorSystem system = ActorSystem.create("Sky");
-		ActorRef orchestrator = system.actorOf(Props.create(Orchestrator.class), "orchestrator");
+		Injector injector = Guice.createInjector(new ExtremeModule());
+		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class,Names.named("orchestrator")));
+		
 		orchestrator.tell(new Orchestrator.ModifyAircraftsMsg(10), ActorRef.noSender());
 	}
 }
