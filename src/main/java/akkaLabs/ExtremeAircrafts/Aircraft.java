@@ -3,7 +3,9 @@ package akkaLabs.ExtremeAircrafts;
 import akka.actor.AbstractActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChangeCommand;
+import akka.japi.Pair;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.AircraftAdvance;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.PositionChange;
 import akkaLabs.ExtremeAircrafts.messages.aircraft.AircraftPositionChangeEvent;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import org.locationtech.spatial4j.context.SpatialContext;
@@ -16,17 +18,17 @@ public class Aircraft extends AbstractActor
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 
 	private UUID uuid;
-	private Position position;
 	private double speed;
 	private double heading;
 	private SpatialContext spatialContext;
+	private Pair<Position,Point> location;
 
 
 	public Aircraft(UUID uuid, double speed, SpatialContext spatialContext) {
 		this.speed = speed;
 		this.uuid = uuid;
 		this.spatialContext = spatialContext;
-		this.position = new Position();
+		this.location = new Pair<Position, Point>(new Position(), calcPoint(new Position()));
 	}
 
 	private void advance() {
@@ -35,31 +37,38 @@ public class Aircraft extends AbstractActor
 
 	private void changePosition(Position newPosition)
 	{
-		this.position = newPosition;
+		this.location = new Pair<Position, Point>(newPosition, calcPoint(newPosition));;
 	}
-
+	
 	@Override
 	public Receive createReceive()
 	{
 		return receiveBuilder().
-				match(PositionChangeCommand.class, msg ->
+				match(PositionChange.class, msg ->
 				{
-					logger.info("Received position changing message: " + this.position + " -> " + msg.getDestPosition());
-					this.changePosition(msg.getDestPosition());
-					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, msg.getDestPosition()), getSelf());
+					Position newPos = msg.getDestPosition();
+					logger.info("Received position changing message: " + this.location.first() + " -> " + newPos);
+					this.changePosition(newPos);
+					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, newPos), getSelf());
 				}).
 				match(AircraftPositionChangeEvent.class, evt ->
 				{
 					Position position = evt.getPosition();
 					Point outerPos = spatialContext.getShapeFactory().multiPoint().pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
-					Point innerPos = spatialContext.getShapeFactory().multiPoint().pointXYZ(this.position.getLongitude(), this.position.getLatitude(), this.position.getAltitude()).build().getCenter();
-					double distance = spatialContext.calcDistance(innerPos, outerPos); //TODO THIS SHIT ISN'T WORKING AND I'M TIRED!
+					double distance = spatialContext.calcDistance(this.location.second(), outerPos); //TODO THIS SHIT ISN'T WORKING AND I'M TIRED!
 					logger.info("Brother " + evt.getAircraftId() + " has changed its location to " + position + "... Good for him!");
 					if (distance < 0.5)
 					{
 						logger.info("Wait! Brother is too close! " + distance);
 					}
+				})
+				.match(AircraftAdvance.class,msg->{
+					advance();
 				}).
 				build();
+	}
+	
+	private Point calcPoint(Position position){
+		return spatialContext.getShapeFactory().multiPoint().pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
 	}
 }

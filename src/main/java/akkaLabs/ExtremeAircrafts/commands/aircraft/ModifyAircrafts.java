@@ -1,9 +1,9 @@
 package akkaLabs.ExtremeAircrafts.commands.aircraft;
 
-public class ModifyAircraftsCommand {
+public class ModifyAircrafts {
 		private int numOfAircrafts;
 
-		public ModifyAircraftsCommand(int numOfAircrafts)
+		public ModifyAircrafts(int numOfAircrafts)
 		{
 			this.numOfAircrafts = numOfAircrafts;
 		}

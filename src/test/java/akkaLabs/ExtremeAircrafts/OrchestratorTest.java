@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.testkit.TestActorRef;
-import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircraftsCommand;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircrafts;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.junit.Assert;
@@ -32,7 +32,7 @@ public class OrchestratorTest
 	public void createTest()
 	{
 		TestActorRef<Orchestrator> orch = getTestActorRef("createTest");
-		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
+		orch.tell(new ModifyAircrafts(10), ActorRef.noSender());
 		Assert.assertEquals(10, orch.underlyingActor().getAircrafts());
 	}
 
@@ -40,8 +40,8 @@ public class OrchestratorTest
 	public void addTest()
 	{
 		TestActorRef<Orchestrator> orch = getTestActorRef("addTest");
-		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
-		orch.tell(new ModifyAircraftsCommand(15), ActorRef.noSender());
+		orch.tell(new ModifyAircrafts(10), ActorRef.noSender());
+		orch.tell(new ModifyAircrafts(15), ActorRef.noSender());
 		Assert.assertEquals(15, orch.underlyingActor().getAircrafts());
 	}
 
@@ -49,8 +49,8 @@ public class OrchestratorTest
 	public void removeTest()
 	{
 		TestActorRef<Orchestrator> orch = getTestActorRef("removeTest");
-		orch.tell(new ModifyAircraftsCommand(10), ActorRef.noSender());
-		orch.tell(new ModifyAircraftsCommand(5), ActorRef.noSender());
+		orch.tell(new ModifyAircrafts(10), ActorRef.noSender());
+		orch.tell(new ModifyAircrafts(5), ActorRef.noSender());
 		Assert.assertEquals(5, orch.underlyingActor().getAircrafts());
 	}
 }
