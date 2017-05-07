@@ -4,6 +4,10 @@ import akkaLabs.ExtremeAircrafts.position.Position;
 
 import java.util.UUID;
 
+import org.locationtech.spatial4j.shape.Point;
+
+import akka.japi.Pair;
+
 /**
  * @author royif
  * @since 06/05/17.
@@ -11,12 +15,12 @@ import java.util.UUID;
 public class AircraftPositionChangeEvent
 {
 	private UUID aircraftId;
-	private Position position;
+	private Pair<Position,Point> location;
 
-	public AircraftPositionChangeEvent(UUID aircraftId, Position position)
+	public AircraftPositionChangeEvent(UUID aircraftId, Pair<Position,Point> location)
 	{
 		this.aircraftId = aircraftId;
-		this.position = position;
+		this.location = location;
 	}
 
 	public UUID getAircraftId()
@@ -24,8 +28,16 @@ public class AircraftPositionChangeEvent
 		return this.aircraftId;
 	}
 
-	public Position getPosition()
+	public Pair<Position,Point> getLocation()
 	{
-		return this.position;
+		return this.location;
+	}
+	
+	public Position getPosition(){
+		return this.location.first();
+	}
+	
+	public Point getPoint(){
+		return this.location.second();
 	}
 }

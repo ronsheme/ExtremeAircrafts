@@ -49,14 +49,13 @@ public class Aircraft extends AbstractActor
 					Position newPos = msg.getDestPosition();
 					logger.info("Received position changing message: " + this.location.first() + " -> " + newPos);
 					this.changePosition(newPos);
-					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, newPos), getSelf());
+					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, this.location), getSelf());
 				}).
 				match(AircraftPositionChangeEvent.class, evt ->
 				{
-					Position position = evt.getPosition();
-					Point outerPos = spatialContext.getShapeFactory().multiPoint().pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
+					Point outerPos = evt.getPoint();
 					double distance = spatialContext.calcDistance(this.location.second(), outerPos); //TODO THIS SHIT ISN'T WORKING AND I'M TIRED!
-					logger.info("Brother " + evt.getAircraftId() + " has changed its location to " + position + "... Good for him!");
+					logger.info("Brother " + evt.getAircraftId() + " has changed its location to " + evt.getPosition() + "... Good for him!");
 					if (distance < 0.5)
 					{
 						logger.info("Wait! Brother is too close! " + distance);
