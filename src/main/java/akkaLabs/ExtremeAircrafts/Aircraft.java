@@ -13,16 +13,14 @@ import org.locationtech.spatial4j.shape.Point;
 
 import java.util.UUID;
 
-public class Aircraft extends AbstractActor
-{
+public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 
 	private UUID uuid;
 	private double speed;
 	private double heading;
 	private SpatialContext spatialContext;
-	private Pair<Position,Point> location;
-
+	private Pair<Position, Point> location;
 
 	public Aircraft(UUID uuid, double speed, SpatialContext spatialContext) {
 		this.speed = speed;
@@ -32,46 +30,44 @@ public class Aircraft extends AbstractActor
 	}
 
 	private void advance() {
-		//TODO calculate new position using heading and speed and apply changePosition
+		// TODO calculate new position using heading and speed and apply
+		// changePosition
 	}
 
-	private void changePosition(Position newPosition)
-	{
-		this.location = new Pair<Position, Point>(newPosition, calcPoint(newPosition));;
+	private void changePosition(Position newPosition) {
+		this.location = new Pair<Position, Point>(newPosition, calcPoint(newPosition));
+		;
 	}
-	
+
 	@Override
-	public Receive createReceive()
-	{
-		return receiveBuilder().
-				match(PositionChange.class, msg ->
-				{
-					Position newPos = msg.getDestPosition();
-					logger.info("Received position changing message: " + this.location.first() + " -> " + newPos);
-					this.changePosition(newPos);
-					getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, this.location), getSelf());
-				}).
-				match(AircraftPositionChangeEvent.class, evt ->
-				{
-					Point outerPos = evt.getPoint();
-					double distance = spatialContext.calcDistance(this.location.second(), outerPos); //TODO THIS SHIT ISN'T WORKING AND I'M TIRED!
-					logger.info("Brother " + evt.getAircraftId() + " has changed its location to " + evt.getPosition() + "... Good for him!");
-					if (distance < 0.5)
-					{
-						logger.info("Wait! Brother is too close! " + distance);
-					}
-				})
-				.match(AircraftAdvance.class,msg->{
-					advance();
-				}).
-				build();
+	public Receive createReceive() {
+		return receiveBuilder().match(PositionChange.class, msg -> {
+			Position newPos = msg.getDestPosition();
+			logger.info("Received position changing message: " + this.location.first() + " -> " + newPos);
+			this.changePosition(newPos);
+			getContext().actorSelection("../*").tell(new AircraftPositionChangeEvent(this.uuid, this.location),
+					getSelf());
+		}).match(AircraftPositionChangeEvent.class, evt -> {
+			if (!evt.getAircraftId().equals(this.uuid)) {
+				Point outerPos = evt.getPoint();
+				double distance = spatialContext.calcDistance(this.location.second(), outerPos); // TODO THIS SHIT ISN'T WORKING AND I'M TIRED!
+				logger.info("Brother " + evt.getAircraftId() + " has changed its location to " + evt.getPosition()
+						+ "... Good for him!");
+				if (distance < 0.5) {
+					logger.info("Wait! Brother is too close! " + distance);
+				}
+			}
+		}).match(AircraftAdvance.class, msg -> {
+			advance();
+		}).build();
 	}
-	
-	private Point calcPoint(Position position){
-		return spatialContext.getShapeFactory().multiPoint().pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
+
+	private Point calcPoint(Position position) {
+		return spatialContext.getShapeFactory().multiPoint()
+				.pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
 	}
-	
-	public Pair<Position,Point> getLocation(){
+
+	public Pair<Position, Point> getLocation() {
 		return this.location;
 	}
 }
