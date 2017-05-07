@@ -18,14 +18,13 @@ public class Main
 {
 	
 	private static final int AUTO_UPDATE = 3000;
-	private static final String ORCHESTRATOR = "orchestrator";
-	private static final String ALL_AIRCRAFTS = "/user/"+ORCHESTRATOR+"/*";
+	private static final String ALL_AIRCRAFTS = "/user/"+ExtremeModule.ORCHESTRATOR+"/*";
 	
 	public static void main(String[] args)
 	{
 		Injector injector = Guice.createInjector(new ExtremeModule());
 		ActorSystem sky = injector.getInstance(ActorSystem.class);
-		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named(ORCHESTRATOR)));
+		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named(ExtremeModule.ORCHESTRATOR)));
 		orchestrator.tell(new ModifyAircrafts(10), ActorRef.noSender());
 		orchestrator.tell(new PositionChange(new Position(100, -75, 15)), ActorRef.noSender());
 		

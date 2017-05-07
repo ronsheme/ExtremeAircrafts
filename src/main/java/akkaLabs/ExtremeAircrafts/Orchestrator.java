@@ -66,7 +66,7 @@ public class Orchestrator extends AbstractActor {
 				.match(Terminated.class, terminated -> this.router = router.removeRoutee(terminated.actor())).build();
 	}
 
-	private Props getProps(UUID uuid) {
+	public Props getProps(UUID uuid) {
 		return Props.create(Aircraft.class,
 				() -> new Aircraft(uuid, MIN_SPEED + Math.random() * MAX_SPEED, this.spatialContext));
 	}

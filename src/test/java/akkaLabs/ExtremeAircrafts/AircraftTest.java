@@ -38,9 +38,10 @@ public class AircraftTest {
 	
 	@Test
 	public void positionChangeTest() {
-		UUID uuid = orchTestRef.underlyingActor().getUuidToActor().keySet().iterator().next();
-		sky.actorSelection("/user/"+ORCH_NAME+"/"+uuid.toString()).tell(new PositionChange(new Position(30,30,30)),ActorRef.noSender());
-		//TODO now what...
+		UUID uuid = UUID.randomUUID();
+		TestActorRef<Aircraft> aircraft = TestActorRef.create(sky, orchTestRef.underlyingActor().getProps(uuid), uuid.toString());
+		sky.actorSelection("/user/"+uuid.toString()).tell(new PositionChange(new Position(30,30,30)),ActorRef.noSender());
+		Assert.assertEquals(aircraft.underlyingActor().getLocation().first().getLatitude(), 30,.0);
 	}
 	
 	@Test

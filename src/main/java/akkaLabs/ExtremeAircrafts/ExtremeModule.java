@@ -11,8 +11,9 @@ import org.locationtech.spatial4j.context.SpatialContextFactory;
 public class ExtremeModule extends AbstractModule
 {
 	private SpatialContextFactory spatialContextFactory;
-	private SpatialContext spatialContext;
-	private ActorSystem sky;
+	protected SpatialContext spatialContext;
+	protected ActorSystem sky;
+	public static final String ORCHESTRATOR = "orchestrator";
 
 	public ExtremeModule()
 	{
@@ -27,8 +28,8 @@ public class ExtremeModule extends AbstractModule
 		bind(ActorSystem.class).toInstance(this.sky);
 		bind(SpatialContextFactory.class).toInstance(this.spatialContextFactory);
 		bind(SpatialContext.class).toInstance(this.spatialContext);
-		bind(ActorRef.class).annotatedWith(Names.named("orchestrator"))
-				.toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext)), "orchestrator"));
+		bind(ActorRef.class).annotatedWith(Names.named(ORCHESTRATOR))
+				.toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext)),ORCHESTRATOR));
 	}
 
 }

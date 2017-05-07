@@ -70,4 +70,8 @@ public class Aircraft extends AbstractActor
 	private Point calcPoint(Position position){
 		return spatialContext.getShapeFactory().multiPoint().pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
 	}
+	
+	public Pair<Position,Point> getLocation(){
+		return this.location;
+	}
 }
