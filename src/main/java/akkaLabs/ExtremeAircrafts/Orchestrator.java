@@ -30,7 +30,7 @@ public class Orchestrator extends AbstractActor {
 
 	private final SpatialContext spatialContext;
 
-	private int aircrafts;
+	private int aircraftsCount;
 
 	public Orchestrator(SpatialContext spatialContext) {
 		this.spatialContext = spatialContext;
@@ -42,8 +42,8 @@ public class Orchestrator extends AbstractActor {
 	public Receive createReceive() {
 		return receiveBuilder().match(ModifyAircrafts.class, msg -> {
 			int n = msg.getNumOfAircrafts();
-			if (this.aircrafts < n) {// add aircrafts
-				IntStream.range(this.aircrafts, n).forEach(i -> {
+			if (this.aircraftsCount < n) {// add aircrafts
+				IntStream.range(this.aircraftsCount, n).forEach(i -> {
 					UUID uuid = UUID.randomUUID();
 					logger.info("Creating actor #" + i + " uuid:" + uuid.toString());
 					ActorRef newAircraft = getContext().actorOf(getProps(uuid), uuid.toString());
@@ -52,16 +52,16 @@ public class Orchestrator extends AbstractActor {
 					getContext().watch(newAircraft);
 					this.router = this.router.addRoutee(newAircraft);
 				});
-			} else if (this.aircrafts > n) { // remove aircrafts
+			} else if (this.aircraftsCount > n) { // remove aircrafts
 				Iterator<UUID> uuidIterator = uuidToActor.keySet().iterator();
-				IntStream.range(n, this.aircrafts).forEach(i -> {
+				IntStream.range(n, this.aircraftsCount).forEach(i -> {
 					UUID uuid = uuidIterator.next();
 					logger.info("Stopping actor with uuid:" + uuid.toString());
 					getContext().stop(uuidToActor.get(uuid));
 				});
 			}
-			this.aircrafts = n;
-		}).match(RequestAircraftsCount.class, msg -> getSender().tell(this.aircrafts, self()))
+			this.aircraftsCount = n;
+		}).match(RequestAircraftsCount.class, msg -> getSender().tell(this.aircraftsCount, self()))
 				.match(PositionChange.class, cmd -> this.router.route(cmd, getSender()))
 				.match(Terminated.class, terminated -> this.router = router.removeRoutee(terminated.actor())).build();
 	}
@@ -71,8 +71,12 @@ public class Orchestrator extends AbstractActor {
 				() -> new Aircraft(uuid, MIN_SPEED + Math.random() * MAX_SPEED, this.spatialContext));
 	}
 
-	public int getAircrafts() {// for tests
-		return this.aircrafts;
+	public int getAircraftsCount() {// for tests
+		return this.aircraftsCount;
+	}
+	
+	public Map<UUID, ActorRef> getUuidToActor() {// for tests
+		return this.uuidToActor;
 	}
 
 	public static class RequestAircraftsCount {
