@@ -13,6 +13,8 @@ import org.locationtech.spatial4j.shape.Point;
 
 import java.util.UUID;
 
+import static akkaLabs.ExtremeAircrafts.ExtremeModule.RATE;
+
 public class Aircraft extends AbstractActor
 {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
@@ -25,6 +27,7 @@ public class Aircraft extends AbstractActor
 
 	public Aircraft(UUID uuid, double speed, double heading, SpatialContext spatialContext)
 	{
+		this.heading = heading;
 		this.speed = speed;
 		this.uuid = uuid;
 		this.spatialContext = spatialContext;
@@ -33,7 +36,17 @@ public class Aircraft extends AbstractActor
 
 	private void advance()
 	{
-		logger.info(uuid + " - has advanced");
+		double vLat = speed * Math.sin(heading) / 90;
+		double vLong = speed * Math.cos(heading) / 180;
+
+		double latDist = RATE * vLat;
+		double longDist = RATE * vLong;
+
+		Position position = location.first();
+
+		this.changePosition(new Position(position.getLongitude() + longDist, position.getLatitude() + latDist, position.getAltitude()));
+
+		logger.info(uuid + " - has advanced to " + this.location.first());
 		// TODO calculate new position using heading and speed and apply
 		// changePosition
 	}
@@ -41,7 +54,6 @@ public class Aircraft extends AbstractActor
 	private void changePosition(Position newPosition)
 	{
 		this.location = new Pair<>(newPosition, calcPoint(newPosition));
-		;
 	}
 
 	@Override

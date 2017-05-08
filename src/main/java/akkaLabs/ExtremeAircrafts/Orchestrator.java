@@ -16,14 +16,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import static akkaLabs.ExtremeAircrafts.ExtremeModule.*;
+
 public class Orchestrator extends AbstractActor
 {
 	private static final int MIN_SPEED = 10;
 	private static final int MAX_SPEED = 200;
-	private static final double TOP_LEFT_LONGITUDE = 31.7995855;
-	private static final double TOP_LEFT_LATITUDE = 34.673663;
-	private static final double BOTTOM_RIGHT_LONGITUDE = 31.6940723;
-	private static final double BOTTOM_RIGHT_LATITUDE = 34.8884191;
 
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 	private final Map<UUID, ActorRef> uuidToActor;

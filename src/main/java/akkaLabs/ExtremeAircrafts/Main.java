@@ -12,10 +12,10 @@ import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeUnit;
 
+import static akkaLabs.ExtremeAircrafts.ExtremeModule.RATE;
+
 public class Main
 {
-
-	private static final int RATE = 3;
 	private static final String ALL_AIRCRAFTS = "/user/" + ExtremeModule.ORCHESTRATOR + "/*";
 
 	public static void main(String[] args)
