@@ -47,8 +47,6 @@ public class Aircraft extends AbstractActor
 		this.changePosition(new Position(position.getLongitude() + longDist, position.getLatitude() + latDist, position.getAltitude()));
 
 		logger.info(uuid + " - has advanced to " + this.location.first());
-		// TODO calculate new position using heading and speed and apply
-		// changePosition
 	}
 
 	private void changePosition(Position newPosition)
