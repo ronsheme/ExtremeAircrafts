@@ -1,23 +1,21 @@
 package akkaLabs.ExtremeAircrafts.messages.aircraft;
 
+import akka.japi.Pair;
 import akkaLabs.ExtremeAircrafts.position.Position;
-
-import java.util.UUID;
-
 import org.locationtech.spatial4j.shape.Point;
 
-import akka.japi.Pair;
+import java.util.UUID;
 
 /**
  * @author royif
  * @since 06/05/17.
  */
-public class AircraftPositionChangeEvent
+public class PositionChangedEvent
 {
 	private UUID aircraftId;
 	private Pair<Position,Point> location;
 
-	public AircraftPositionChangeEvent(UUID aircraftId, Pair<Position,Point> location)
+	public PositionChangedEvent(UUID aircraftId, Pair<Position, Point> location)
 	{
 		this.aircraftId = aircraftId;
 		this.location = location;

@@ -6,11 +6,11 @@ import akkaLabs.ExtremeAircrafts.position.Position;
  * @author royif
  * @since 06/05/17.
  */
-public class PositionChange
+public class ChangePosition
 {
 	private Position destPosition;
 
-	public PositionChange(Position destPosition)
+	public ChangePosition(Position destPosition)
 	{
 		this.destPosition = destPosition;
 	}
