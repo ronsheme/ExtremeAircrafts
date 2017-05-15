@@ -1,15 +1,16 @@
 package akkaLabs.ExtremeAircrafts;
 
-import akka.actor.AbstractActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
-import akka.japi.Pair;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceAircraft;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ChangePosition;
 import akkaLabs.ExtremeAircrafts.messages.aircraft.PositionChangedEvent;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.shape.Point;
+
+import akka.actor.AbstractActor;
+import akka.event.Logging;
+import akka.event.LoggingAdapter;
+import akka.japi.Pair;
 
 import java.util.UUID;
 
