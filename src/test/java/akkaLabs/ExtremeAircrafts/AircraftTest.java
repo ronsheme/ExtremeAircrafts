@@ -38,7 +38,12 @@ public class AircraftTest {
 		// note- we use the props from the orchestrator but the actor is actually not under the orchestrator, but under /user/
 		TestActorRef<Aircraft> aircraft = TestActorRef.create(sky, orchTestRef.underlyingActor().getProps(uuid), uuid.toString());
 		sky.actorSelection("/user/" + uuid.toString()).tell(new ChangePosition(new Position(30, 30, 30)), ActorRef.noSender());
-		Assert.assertEquals(aircraft.underlyingActor().getLocation().first().getLatitude(), 30,.0);
+		try {
+			Thread.sleep(100);//wait a little for message to be sent
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Assert.assertEquals(30.0, aircraft.underlyingActor().getLocation().first().getLatitude(),0);
 	}
 	
 	@Test

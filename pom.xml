@@ -36,6 +36,11 @@
 			<version>${version.akka}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-stream_${version.akka.scala}</artifactId>
+			<version>${version.akka}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 			<version>4.0</version>
