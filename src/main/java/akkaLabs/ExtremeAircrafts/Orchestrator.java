@@ -18,8 +18,7 @@ import java.util.stream.IntStream;
 
 import static akkaLabs.ExtremeAircrafts.ExtremeModule.*;
 
-public class Orchestrator extends AbstractActor
-{
+public class Orchestrator extends AbstractActor {
 	private static final int MIN_SPEED = 10;
 	private static final int MAX_SPEED = 200;
 
@@ -28,18 +27,15 @@ public class Orchestrator extends AbstractActor
 	private final SpatialContext spatialContext;
 	private int aircraftsCount;
 
-	public Orchestrator(SpatialContext spatialContext)
-	{
+	public Orchestrator(SpatialContext spatialContext) {
 		this.spatialContext = spatialContext;
 		this.uuidToActor = new HashMap<>();
 	}
 
 	@Override
-	public Receive createReceive()
-	{
+	public Receive createReceive() {
 		return receiveBuilder().
-				match(ModifyAircrafts.class, msg ->
-				{
+				match(ModifyAircrafts.class, msg -> {
 					int n = msg.getNumOfAircrafts();
 					if (this.aircraftsCount < n)
 					{// add aircrafts
@@ -57,11 +53,9 @@ public class Orchestrator extends AbstractActor
 							getContext().watch(newAircraft);
 						});
 					}
-					else if (this.aircraftsCount > n)
-					{ // remove aircrafts
+					else if (this.aircraftsCount > n) { // remove aircrafts
 						Iterator<UUID> uuidIterator = uuidToActor.keySet().iterator();
-						IntStream.range(n, this.aircraftsCount).forEach(i ->
-						{
+						IntStream.range(n, this.aircraftsCount).forEach(i -> {
 							UUID uuid = uuidIterator.next();
 							logger.info("Stopping actor with uuid:" + uuid.toString());
 							getContext().stop(uuidToActor.get(uuid));
@@ -72,8 +66,7 @@ public class Orchestrator extends AbstractActor
 				build();
 	}
 
-	public Props getProps(UUID uuid)
-	{
+	public Props getProps(UUID uuid) {
 		return Props.create(Aircraft.class, () -> new Aircraft(uuid, MIN_SPEED + Math.random() * MAX_SPEED, Math.random() * 360, this.spatialContext));
 	}
 

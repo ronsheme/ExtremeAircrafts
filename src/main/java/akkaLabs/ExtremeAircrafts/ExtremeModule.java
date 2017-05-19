@@ -17,7 +17,7 @@ public class ExtremeModule extends AbstractModule
 	public static final double BOTTOM_RIGHT_LONGITUDE = 31.6940723;
 	public static final double BOTTOM_RIGHT_LATITUDE = 34.8884191;
 
-	public static final int RATE = 1;
+	public static final int UPDATE_RATE = 1;
 
 	protected SpatialContext spatialContext;
 	protected ActorSystem sky;

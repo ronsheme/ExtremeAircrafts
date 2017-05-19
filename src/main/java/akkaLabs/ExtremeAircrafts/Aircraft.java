@@ -1,6 +1,6 @@
 package akkaLabs.ExtremeAircrafts;
 
-import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceAircraft;
+import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceMessage;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ChangePosition;
 import akkaLabs.ExtremeAircrafts.messages.aircraft.PositionChangedEvent;
 import akkaLabs.ExtremeAircrafts.position.Position;
@@ -14,7 +14,7 @@ import akka.japi.Pair;
 
 import java.util.UUID;
 
-import static akkaLabs.ExtremeAircrafts.ExtremeModule.RATE;
+import static akkaLabs.ExtremeAircrafts.ExtremeModule.UPDATE_RATE;
 
 public class Aircraft extends AbstractActor
 {
@@ -40,8 +40,8 @@ public class Aircraft extends AbstractActor
 		double vLat = speed * Math.sin(heading) / 90;
 		double vLong = speed * Math.cos(heading) / 180;
 
-		double latDist = RATE * vLat;
-		double longDist = RATE * vLong;
+		double latDist = UPDATE_RATE * vLat;
+		double longDist = UPDATE_RATE * vLong;
 
 		Position position = location.first();
 
@@ -79,7 +79,7 @@ public class Aircraft extends AbstractActor
 						}
 					}
 				}).
-				match(AdvanceAircraft.class, msg -> advance()).build();
+				match(AdvanceMessage.class, msg -> advance()).build();
 	}
 
 	private Point calcPoint(Position position)

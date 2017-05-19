@@ -54,9 +54,9 @@
 
 		<!-- Testing dependencies -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${version.junit}</version>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
