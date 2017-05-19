@@ -2,14 +2,17 @@ package akkaLabs.ExtremeAircrafts;
 
 import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceMessage;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ChangePosition;
+import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
 import akkaLabs.ExtremeAircrafts.messages.aircraft.PositionChangedEvent;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.shape.Point;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import akka.event.japi.LookupEventBus;
 import akka.japi.Pair;
 
 import java.util.UUID;
@@ -25,13 +28,14 @@ public class Aircraft extends AbstractActor
 	private double heading;
 	private SpatialContext spatialContext;
 	private Pair<Position, Point> location;
+	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
 
-	public Aircraft(UUID uuid, double speed, double heading, SpatialContext spatialContext)
-	{
+	public Aircraft(UUID uuid, double speed, double heading, SpatialContext spatialContext,  LookupEventBus<MessageEnvelope, ActorRef, String> eventBus) {
 		this.heading = heading;
 		this.speed = speed;
 		this.uuid = uuid;
 		this.spatialContext = spatialContext;
+		this.eventBus = eventBus;
 		this.location = new Pair<>(new Position(), calcPoint(new Position()));
 	}
 
@@ -64,7 +68,7 @@ public class Aircraft extends AbstractActor
 					Position newPos = msg.getDestPosition();
 					logger.info("Received position changing message: " + this.location.first() + " -> " + newPos);
 					this.changePosition(newPos);
-					getContext().actorSelection("../*").tell(new PositionChangedEvent(this.uuid, this.location), getSelf());
+					eventBus.publish(new MessageEnvelope(PositionChangedEventBus.POSITION_CHANGED_TOPIC,new PositionChangedEvent(this.uuid, this.location)));
 				}).
 				match(PositionChangedEvent.class, evt ->
 				{

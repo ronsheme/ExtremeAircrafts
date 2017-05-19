@@ -3,7 +3,11 @@ package akkaLabs.ExtremeAircrafts;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.event.japi.LookupEventBus;
+import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
+
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.context.SpatialContextFactory;
@@ -19,15 +23,17 @@ public class ExtremeModule extends AbstractModule
 
 	public static final int UPDATE_RATE = 1;
 
-	protected SpatialContext spatialContext;
-	protected ActorSystem sky;
+	private SpatialContext spatialContext;
+	private ActorSystem sky;
 	private SpatialContextFactory spatialContextFactory;
+	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
 
 	public ExtremeModule()
 	{
 		this.spatialContextFactory = new SpatialContextFactory();
 		this.spatialContext = this.spatialContextFactory.newSpatialContext();
 		this.sky = ActorSystem.create("Sky");
+		this.eventBus = new PositionChangedEventBus();
 	}
 
 	@Override
@@ -36,7 +42,8 @@ public class ExtremeModule extends AbstractModule
 		bind(ActorSystem.class).toInstance(this.sky);
 		bind(SpatialContextFactory.class).toInstance(this.spatialContextFactory);
 		bind(SpatialContext.class).toInstance(this.spatialContext);
-		bind(ActorRef.class).annotatedWith(Names.named(ORCHESTRATOR)).toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext)), ORCHESTRATOR));
+		bind(ActorRef.class).annotatedWith(Names.named(ORCHESTRATOR)).toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext,this.eventBus)), ORCHESTRATOR));
+		bind(new TypeLiteral<LookupEventBus<MessageEnvelope, ActorRef, String>>(){}).toInstance(eventBus);
 	}
 
 }

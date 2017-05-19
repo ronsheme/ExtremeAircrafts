@@ -3,44 +3,53 @@ package akkaLabs.ExtremeAircrafts;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import akka.event.japi.LookupEventBus;
 import akka.testkit.TestActorRef;
 import akka.testkit.javadsl.TestKit;
+import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
+
+import org.locationtech.spatial4j.context.SpatialContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
+
+import com.google.inject.Inject;
+
 import scala.concurrent.duration.Duration;
 
 import java.util.UUID;
 
 import static akka.testkit.JavaTestKit.duration;
 
+@Guice(modules = ExtremeModule.class)
 public class AircraftTest {
 
-	private static ActorSystem system;
+	@Inject
+	private ActorSystem sky;
+	@Inject
+	private SpatialContext spatialContext;
+	@Inject
+	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
 
-	@BeforeClass
-	public static void setup() {
-		system = ActorSystem.create();
-	}
-
+	
 	@AfterClass
-	public static void teardown() {
-		TestKit.shutdownActorSystem(system, Duration.create("1 second"),false);
-		system = null;
+	public void teardown() {
+		TestKit.shutdownActorSystem(sky, Duration.create("1 second"),false);
+		sky = null;
 	}
 
 	@Test
 	public void testIt() {
-		new TestKit(system) {{
-			final Props props = Props.create(Orchestrator.class);
-			final TestActorRef<Orchestrator> orchestrator = TestActorRef.create(system,props);
+		new TestKit(sky) {{
+			final TestActorRef<Orchestrator> orchestrator = TestActorRef.create(sky, Props.create(Orchestrator.class, () -> new Orchestrator(spatialContext,eventBus)));
 
 			UUID subject1Uuid = UUID.randomUUID();
 			UUID subject2Uuid = UUID.randomUUID();
-			final ActorRef subject1  = system.actorOf(orchestrator.underlyingActor().getProps(subject1Uuid));
-			final ActorRef subject2 = system.actorOf(orchestrator.underlyingActor().getProps(subject2Uuid));
-			final TestKit probe = new TestKit(system);
+			final ActorRef subject1  = sky.actorOf(orchestrator.underlyingActor().getProps(subject1Uuid));
+			final ActorRef subject2 = sky.actorOf(orchestrator.underlyingActor().getProps(subject2Uuid));
+			final TestKit probe = new TestKit(sky);
 //TODO: implement Event Bus before completing this test. Then make testRef (through TestKit) subscribe to the events
 //			subject1.tell(, ActorRef.noSender());
 //			subject2.expectMsg(duration("1 second"), "done");
