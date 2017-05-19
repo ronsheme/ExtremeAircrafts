@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 @Guice(modules = ExtremeModule.class)
 public class OrchestratorTest {
 
+	//not sure why injection of these causes TestActorRef.create() to fail with message "terminated" 
 	private ActorSystem system = ActorSystem.create("Sky");
 	private SpatialContext spatialContext = new SpatialContextFactory().newSpatialContext();
 	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus = new PositionChangedEventBus();
