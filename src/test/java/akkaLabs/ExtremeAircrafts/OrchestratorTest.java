@@ -5,8 +5,9 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.event.japi.LookupEventBus;
 import akka.testkit.TestActorRef;
+import akka.testkit.javadsl.TestKit;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircrafts;
-import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
 
 import com.google.inject.Inject;
 
@@ -16,9 +17,11 @@ import java.util.Map;
 
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
+import scala.concurrent.duration.Duration;
 
 @Guice(moduleFactory = ExtremeModuleFactory.class)
 public class OrchestratorTest {
@@ -28,13 +31,19 @@ public class OrchestratorTest {
 	@Inject
 	private SpatialContext spatialContext;
 	@Inject
-	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
+	private LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus;
 	
 	private Map<String,TestActorRef<Orchestrator>> testRefs = new HashMap<>();
 	
 	@BeforeClass
 	public void setup(){
 		Arrays.asList("createTest","addTest","removeTest").stream().forEach(name->testRefs.put(name, getTestActorRef(name)));
+	}
+
+	@AfterClass
+	public void teardown() {
+		TestKit.shutdownActorSystem(system, Duration.create("1 second"),false);
+		system = null;
 	}
 
 	@Test

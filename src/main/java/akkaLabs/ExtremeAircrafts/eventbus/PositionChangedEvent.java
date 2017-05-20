@@ -1,4 +1,4 @@
-package akkaLabs.ExtremeAircrafts.messages.aircraft;
+package akkaLabs.ExtremeAircrafts.eventbus;
 
 import akka.japi.Pair;
 import akkaLabs.ExtremeAircrafts.position.Position;

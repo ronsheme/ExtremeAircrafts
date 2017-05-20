@@ -2,8 +2,9 @@ package akkaLabs.ExtremeAircrafts;
 
 import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceMessage;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ChangePosition;
-import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
-import akkaLabs.ExtremeAircrafts.messages.aircraft.PositionChangedEvent;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvent;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.shape.Point;
@@ -19,8 +20,7 @@ import java.util.UUID;
 
 import static akkaLabs.ExtremeAircrafts.ExtremeModule.UPDATE_RATE;
 
-public class Aircraft extends AbstractActor
-{
+public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 
 	private UUID uuid;
@@ -28,19 +28,20 @@ public class Aircraft extends AbstractActor
 	private double heading;
 	private SpatialContext spatialContext;
 	private Pair<Position, Point> location;
-	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
+	private LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus;
 
-	public Aircraft(UUID uuid, double speed, double heading, SpatialContext spatialContext,  LookupEventBus<MessageEnvelope, ActorRef, String> eventBus) {
+	public Aircraft(UUID uuid, double speed, double heading, SpatialContext spatialContext,  LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus) {
 		this.heading = heading;
 		this.speed = speed;
 		this.uuid = uuid;
 		this.spatialContext = spatialContext;
 		this.eventBus = eventBus;
 		this.location = new Pair<>(new Position(), calcPoint(new Position()));
+
+		eventBus.subscribe(this.getSelf(), PositionChangedEventBus.POSITION_CHANGED_TOPIC);
 	}
 
-	private void advance()
-	{
+	private void advance() {
 		double vLat = speed * Math.sin(heading) / 90;
 		double vLong = speed * Math.cos(heading) / 180;
 
@@ -52,23 +53,21 @@ public class Aircraft extends AbstractActor
 		this.changePosition(new Position(position.getLongitude() + longDist, position.getLatitude() + latDist, position.getAltitude()));
 
 		logger.info(uuid + " - has advanced to " + this.location.first());
+
+		publishPositionChanged();
 	}
 
-	private void changePosition(Position newPosition)
-	{
-		this.location = new Pair<>(newPosition, calcPoint(newPosition));
-	}
+
 
 	@Override
-	public Receive createReceive()
-	{
+	public Receive createReceive() {
 		return receiveBuilder().
 				match(ChangePosition.class, msg ->
 				{
 					Position newPos = msg.getDestPosition();
 					logger.info("Received position changing message: " + this.location.first() + " -> " + newPos);
 					this.changePosition(newPos);
-					eventBus.publish(new MessageEnvelope(PositionChangedEventBus.POSITION_CHANGED_TOPIC,new PositionChangedEvent(this.uuid, this.location)));
+					publishPositionChanged();
 				}).
 				match(PositionChangedEvent.class, evt ->
 				{
@@ -86,13 +85,28 @@ public class Aircraft extends AbstractActor
 				match(AdvanceMessage.class, msg -> advance()).build();
 	}
 
-	private Point calcPoint(Position position)
-	{
+	public Pair<Position, Point> getLocation() {
+		return this.location;
+	}
+
+	public double getSpeed(){
+		return this.speed;
+	}
+
+	public double getHeading(){
+		return this.heading;
+	}
+
+	private Point calcPoint(Position position) {
 		return spatialContext.getShapeFactory().multiPoint().pointXYZ(position.getLongitude(), position.getLatitude(), position.getAltitude()).build().getCenter();
 	}
 
-	public Pair<Position, Point> getLocation()
+	private void changePosition(Position newPosition)
 	{
-		return this.location;
+		this.location = new Pair<>(newPosition, calcPoint(newPosition));
+	}
+
+	private void publishPositionChanged(){
+		eventBus.publish(new PositionChangedEvelope(new PositionChangedEvent(this.uuid, this.location)));
 	}
 }

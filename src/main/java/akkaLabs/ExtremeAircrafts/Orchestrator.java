@@ -8,7 +8,8 @@ import akka.event.LoggingAdapter;
 import akka.event.japi.LookupEventBus;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ChangePosition;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircrafts;
-import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import org.locationtech.spatial4j.context.SpatialContext;
 
@@ -28,9 +29,9 @@ public class Orchestrator extends AbstractActor {
 	private final Map<UUID, ActorRef> uuidToActor;
 	private final SpatialContext spatialContext;
 	private int aircraftsCount;
-	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
+	private LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus;
 
-	public Orchestrator(SpatialContext spatialContext,LookupEventBus<MessageEnvelope, ActorRef, String> eventBus) {
+	public Orchestrator(SpatialContext spatialContext,LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus) {
 		this.spatialContext = spatialContext;
 		this.eventBus = eventBus;
 		this.uuidToActor = new HashMap<>();
@@ -54,7 +55,6 @@ public class Orchestrator extends AbstractActor {
 							newAircraft.tell(new ChangePosition(new Position(longitude, latitude, 15)), ActorRef.noSender());
 							uuidToActor.put(uuid, newAircraft);
 
-							eventBus.subscribe(newAircraft, PositionChangedEventBus.POSITION_CHANGED_TOPIC);
 							getContext().watch(newAircraft);
 						});
 					}

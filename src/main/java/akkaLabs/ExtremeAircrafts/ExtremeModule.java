@@ -4,8 +4,9 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.event.japi.LookupEventBus;
-import akkaLabs.ExtremeAircrafts.messages.aircraft.MessageEnvelope;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
 
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
@@ -26,7 +27,7 @@ public class ExtremeModule extends AbstractModule
 	private SpatialContext spatialContext;
 	private ActorSystem sky;
 	private SpatialContextFactory spatialContextFactory;
-	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
+	private LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus;
 
 	public ExtremeModule()
 	{
@@ -43,7 +44,7 @@ public class ExtremeModule extends AbstractModule
 		bind(SpatialContextFactory.class).toInstance(this.spatialContextFactory);
 		bind(SpatialContext.class).toInstance(this.spatialContext);
 		bind(ActorRef.class).annotatedWith(Names.named(ORCHESTRATOR)).toProvider(() -> this.sky.actorOf(Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext,this.eventBus)), ORCHESTRATOR));
-		bind(new TypeLiteral<LookupEventBus<MessageEnvelope, ActorRef, String>>(){}).toInstance(eventBus);
+		bind(new TypeLiteral<LookupEventBus<PositionChangedEvelope, ActorRef, String>>(){}).toInstance(eventBus);
 	}
 
 }
