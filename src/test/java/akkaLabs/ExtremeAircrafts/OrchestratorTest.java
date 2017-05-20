@@ -13,22 +13,22 @@ import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.locationtech.spatial4j.context.SpatialContext;
-import org.locationtech.spatial4j.context.SpatialContextFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
-@Guice(modules = ExtremeModule.class)
+@Guice(moduleFactory = ExtremeModuleFactory.class)
 public class OrchestratorTest {
 
-	//not sure why injection of these causes TestActorRef.create() to fail with message "terminated" 
-	private ActorSystem system = ActorSystem.create("Sky");
-	private SpatialContext spatialContext = new SpatialContextFactory().newSpatialContext();
-	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus = new PositionChangedEventBus();
+	@Inject
+	private ActorSystem system;
+	@Inject
+	private SpatialContext spatialContext;
+	@Inject
+	private LookupEventBus<MessageEnvelope, ActorRef, String> eventBus;
 	
 	private Map<String,TestActorRef<Orchestrator>> testRefs = new HashMap<>();
 	
@@ -61,6 +61,6 @@ public class OrchestratorTest {
 	}
 
 	private TestActorRef<Orchestrator> getTestActorRef(String name) {
-		return TestActorRef.create(system, Props.create(Orchestrator.class, () -> new Orchestrator(spatialContext,eventBus)), name);
+		return TestActorRef.create(this.system, Props.create(Orchestrator.class, () -> new Orchestrator(this.spatialContext,this.eventBus)), name);
 	}
 }

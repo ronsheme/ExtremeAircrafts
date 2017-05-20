@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import static akka.testkit.JavaTestKit.duration;
 
-@Guice(modules = ExtremeModule.class)
+@Guice(moduleFactory = ExtremeModuleFactory.class)
 public class AircraftTest {
 
 	@Inject
