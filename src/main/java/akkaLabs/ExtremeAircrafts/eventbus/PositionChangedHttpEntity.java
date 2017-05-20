@@ -6,6 +6,8 @@ import java.util.UUID;
 
 /**
  * Created by Ron on 21/05/2017.
+ *
+ * The problem with PositionChangedEvent is that jackson cannot serialize because the Point has cyclic reference
  */
 public class PositionChangedHttpEntity {
     private UUID aircraftId;
