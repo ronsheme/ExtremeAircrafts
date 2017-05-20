@@ -3,6 +3,8 @@ package akkaLabs.ExtremeAircrafts;
 import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.event.japi.LookupEventBus;
 import akka.http.javadsl.ConnectHttp;
 import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
@@ -12,7 +14,10 @@ import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceMessage;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircrafts;
-import akkaLabs.ExtremeAircrafts.http.AircraftsAggregator;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
+import akkaLabs.ExtremeAircrafts.http.AircraftsServer;
+import akkaLabs.ExtremeAircrafts.http.HttpUpdater;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -31,14 +36,17 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		Injector injector = Guice.createInjector(new ExtremeModule());
 		ActorSystem sky = injector.getInstance(ActorSystem.class);
-		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named(ExtremeModule.ORCHESTRATOR)));
+		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named(ExtremeModule.ORCHESTRATOR)));//TODO: use injection that is supported by akka
+		LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus = injector.getInstance(Key.get(LookupEventBus.class, Names.named(ExtremeModule.EVENTBUS_NAME)));//TODO: use injection that is supported by akka
 
 		Http http = Http.get(sky);
 		ActorMaterializer materializer = ActorMaterializer.create(sky);
-		AircraftsAggregator aggregator = new AircraftsAggregator();
+		AircraftsServer aggregator = new AircraftsServer();
 		Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = aggregator.createRoute().flow(sky, materializer);
 		CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost("localhost", 8080), materializer);
 		System.out.println("Server online at http://localhost:8080/");
+
+		sky.actorOf(Props.create(HttpUpdater.class,()->new HttpUpdater(eventBus)),"httpUpdated");
 
 		orchestrator.tell(new ModifyAircrafts(10), ActorRef.noSender());
 		sky.scheduler().schedule(Duration.Zero(), Duration.create(UPDATE_RATE, TimeUnit.SECONDS), () -> sky.actorSelection(ALL_AIRCRAFTS).tell(new AdvanceMessage(), ActorRef.noSender()), sky.dispatcher());

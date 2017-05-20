@@ -18,6 +18,8 @@ import akka.japi.Pair;
 
 import java.util.UUID;
 
+import static akkaLabs.ExtremeAircrafts.ExtremeModule.*;
+
 public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 
@@ -53,7 +55,7 @@ public class Aircraft extends AbstractActor {
 
 		Position position = location.first();
 
-		this.changePosition(new Position(position.getLongitude() + longDist, position.getLatitude() + latDist, position.getAltitude()));
+		this.changePosition(new Position(BOTTOM_RIGHT_LONGITUDE+(position.getLongitude() + longDist)%TOP_LEFT_LONGITUDE, BOTTOM_RIGHT_LATITUDE+(position.getLatitude() + latDist)%TOP_LEFT_LATITUDE, position.getAltitude()));
 
 		logger.info(uuid + " - has advanced to " + this.location.first());
 

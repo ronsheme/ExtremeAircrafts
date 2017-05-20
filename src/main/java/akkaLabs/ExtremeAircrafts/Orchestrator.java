@@ -11,6 +11,7 @@ import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircrafts;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
 import akkaLabs.ExtremeAircrafts.position.Position;
+import com.google.inject.name.Named;
 import org.locationtech.spatial4j.context.SpatialContext;
 
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class Orchestrator extends AbstractActor {
 	private final Map<UUID, ActorRef> uuidToActor;
 	private final SpatialContext spatialContext;
 	private int aircraftsCount;
+	@Named(value="positionChangedEventBus")
 	private LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus;
 
 	public Orchestrator(SpatialContext spatialContext,LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus) {
