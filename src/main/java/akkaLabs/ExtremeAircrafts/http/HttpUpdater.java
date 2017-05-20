@@ -18,6 +18,7 @@ import akkaLabs.ExtremeAircrafts.ExtremeModule;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvent;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
+import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedHttpEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -44,9 +45,10 @@ public class HttpUpdater extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder().match(PositionChangedEvent.class, evt -> {
-            logger.info("Sending HTTP request with PositionChangedEvent for aircraft {}",evt.getAircraftId());
+            logger.info("Sending HTTP request with PositionChangedEvent for aircraft {}", evt.getAircraftId());
             Http.get(system)
-                    .singleRequest(HttpRequest.POST(this.aircraftAddress + "/update").withEntity(ContentTypes.APPLICATION_JSON, mapper.writeValueAsString(evt)), materializer);
+                    .singleRequest(HttpRequest.POST(this.aircraftAddress + "/update").withEntity(ContentTypes.APPLICATION_JSON, mapper.
+                            writeValueAsString(new PositionChangedHttpEntity(evt.getAircraftId(), evt.getPosition()))), materializer);
         }).build();
     }
 }
