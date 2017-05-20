@@ -22,13 +22,14 @@
 
 		<version.akka.scala>2.11</version.akka.scala>
 		<version.akka>2.5.1</version.akka>
+		<version.akka.http>10.0.6</version.akka.http>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-http_${version.akka.scala}</artifactId>
-			<version>10.0.6</version>
+			<version>${version.akka.http}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
@@ -39,6 +40,11 @@
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-stream_${version.akka.scala}</artifactId>
 			<version>${version.akka}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-http-jackson_${version.akka.scala}</artifactId>
+			<version>${version.akka.http}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>

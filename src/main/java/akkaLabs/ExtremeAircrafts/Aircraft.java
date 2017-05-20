@@ -18,8 +18,6 @@ import akka.japi.Pair;
 
 import java.util.UUID;
 
-import static akkaLabs.ExtremeAircrafts.ExtremeModule.UPDATE_RATE;
-
 public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 
@@ -29,6 +27,7 @@ public class Aircraft extends AbstractActor {
 	private SpatialContext spatialContext;
 	private Pair<Position, Point> location;
 	private LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus;
+	private long lastUpdateMillis;
 
 	public Aircraft(UUID uuid, double speed, double heading, SpatialContext spatialContext,  LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus) {
 		this.heading = heading;
@@ -37,16 +36,20 @@ public class Aircraft extends AbstractActor {
 		this.spatialContext = spatialContext;
 		this.eventBus = eventBus;
 		this.location = new Pair<>(new Position(), calcPoint(new Position()));
+		this.lastUpdateMillis = System.currentTimeMillis();
 
 		eventBus.subscribe(this.getSelf(), PositionChangedEventBus.POSITION_CHANGED_TOPIC);
 	}
 
 	private void advance() {
+		long currMillis = System.currentTimeMillis();
+		long timeDelta = currMillis-this.lastUpdateMillis;
+		this.lastUpdateMillis = currMillis;
 		double vLat = speed * Math.sin(heading) / 90;
 		double vLong = speed * Math.cos(heading) / 180;
 
-		double latDist = UPDATE_RATE * vLat;
-		double longDist = UPDATE_RATE * vLong;
+		double latDist = timeDelta * vLat;
+		double longDist = timeDelta * vLong;
 
 		Position position = location.first();
 

@@ -57,7 +57,6 @@ public class AircraftTest {
 	public void testPositionChangedPublish() {
 		new TestKit(this.system) {{
 			UUID subject1Uuid = UUID.randomUUID();
-			UUID subject2Uuid = UUID.randomUUID();
 			ActorRef subject1  = system.actorOf(orchestrator.underlyingActor().getProps(subject1Uuid));
 			eventBus.subscribe(getRef(),PositionChangedEventBus.POSITION_CHANGED_TOPIC);
 
