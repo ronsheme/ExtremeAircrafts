@@ -1,22 +1,12 @@
 package akkaLabs.ExtremeAircrafts;
 
-import akka.NotUsed;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.event.japi.LookupEventBus;
-import akka.http.javadsl.ConnectHttp;
-import akka.http.javadsl.Http;
-import akka.http.javadsl.ServerBinding;
-import akka.http.javadsl.model.HttpRequest;
-import akka.http.javadsl.model.HttpResponse;
-import akka.stream.ActorMaterializer;
-import akka.stream.javadsl.Flow;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.AdvanceMessage;
 import akkaLabs.ExtremeAircrafts.commands.aircraft.ModifyAircrafts;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
-import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
-import akkaLabs.ExtremeAircrafts.http.AircraftsServer;
 import akkaLabs.ExtremeAircrafts.http.HttpUpdater;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -25,7 +15,6 @@ import com.google.inject.name.Names;
 import scala.concurrent.duration.Duration;
 
 import java.io.IOException;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 import static akkaLabs.ExtremeAircrafts.ExtremeModule.UPDATE_RATE;
