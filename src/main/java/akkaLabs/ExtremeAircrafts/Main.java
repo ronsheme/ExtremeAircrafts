@@ -39,20 +39,20 @@ public class Main {
 		ActorRef orchestrator = injector.getInstance(Key.get(ActorRef.class, Names.named(ExtremeModule.ORCHESTRATOR)));//TODO: use injection that is supported by akka
 		LookupEventBus<PositionChangedEvelope, ActorRef, String> eventBus = injector.getInstance(Key.get(LookupEventBus.class, Names.named(ExtremeModule.EVENTBUS_NAME)));//TODO: use injection that is supported by akka
 
-		Http http = Http.get(sky);
-		ActorMaterializer materializer = ActorMaterializer.create(sky);
-		AircraftsServer aggregator = new AircraftsServer();
-		Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = aggregator.createRoute().flow(sky, materializer);
-		CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost("localhost", 8080), materializer);
-		System.out.println("Server online at http://localhost:8080/");
+//		Http http = Http.get(sky);
+//		ActorMaterializer materializer = ActorMaterializer.create(sky);
+//		AircraftsServer aggregator = new AircraftsServer();
+//		Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = aggregator.createRoute().flow(sky, materializer);
+//		CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow, ConnectHttp.toHost("localhost", 8080), materializer);
+//		System.out.println("Server online at http://localhost:8080/");
 
-		sky.actorOf(Props.create(HttpUpdater.class,()->new HttpUpdater(eventBus)),"httpUpdated");
+		sky.actorOf(Props.create(HttpUpdater.class,()->new HttpUpdater(eventBus)),"httpUpdater");
 
 		orchestrator.tell(new ModifyAircrafts(10), ActorRef.noSender());
 		sky.scheduler().schedule(Duration.Zero(), Duration.create(UPDATE_RATE, TimeUnit.SECONDS), () -> sky.actorSelection(ALL_AIRCRAFTS).tell(new AdvanceMessage(), ActorRef.noSender()), sky.dispatcher());
 
-		System.out.println("Press any key to terminate...");
-		System.in.read();
-		binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> sky.terminate());
+//		System.out.println("Press any key to terminate...");
+//		System.in.read();
+//		binding.thenCompose(ServerBinding::unbind).thenAccept(unbound -> sky.terminate());
 	}
 }
