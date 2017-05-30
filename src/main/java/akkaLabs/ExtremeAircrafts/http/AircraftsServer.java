@@ -10,8 +10,8 @@ import akka.Done;
 import akka.http.javadsl.server.AllDirectives;
 import akka.http.javadsl.server.Route;
 import akka.http.javadsl.marshallers.jackson.Jackson;
-import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedHttpEntity;
 
+@Deprecated
 public class AircraftsServer extends AllDirectives {
 
     private Map<UUID, PositionChangedHttpEntity> positionEvents = new ConcurrentHashMap<>();

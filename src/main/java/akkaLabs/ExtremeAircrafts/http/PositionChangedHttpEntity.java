@@ -1,4 +1,4 @@
-package akkaLabs.ExtremeAircrafts.eventbus;
+package akkaLabs.ExtremeAircrafts.http;
 
 import akkaLabs.ExtremeAircrafts.position.Position;
 
@@ -10,8 +10,18 @@ import java.util.UUID;
  * The problem with PositionChangedEvent is that jackson cannot serialize because the Point has cyclic reference
  */
 public class PositionChangedHttpEntity {
+    public void setAircraftId(UUID aircraftId) {
+        this.aircraftId = aircraftId;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
     private UUID aircraftId;
     private Position position;
+
+    public PositionChangedHttpEntity(){}
 
     public PositionChangedHttpEntity(UUID aircraftId, Position position)
     {
@@ -24,7 +34,7 @@ public class PositionChangedHttpEntity {
         return this.aircraftId;
     }
 
-    public Position getPositoin()
+    public Position getPosition()
     {
         return this.position;
     }
