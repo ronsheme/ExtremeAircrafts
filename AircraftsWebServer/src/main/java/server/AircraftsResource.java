@@ -3,6 +3,7 @@ package server;
 import akkaLabs.ExtremeAircrafts.http.PositionChangedHttpEntity;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import geojson.GeoJSON;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
