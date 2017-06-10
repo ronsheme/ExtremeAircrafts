@@ -9,17 +9,20 @@ var map = new mapboxgl.Map({
 // disable map rotation using right click + drag
 map.dragRotate.disable();
 
+var url = 'http://localhost:8080/api/aircrafts';
+
 map.on('load', function () {
         window.setInterval(function() {
-            map.getSource('aircrafts').setData(aircrafts_geoJson);
+            map.getSource('aircrafts').setData(url);
         }, 1000)
 
+    map.addSource('aircrafts', { type: 'geojson', data: url });
     map.addLayer({
             "id": "aircrafts",
             "type": "symbol",
             "source": "aircrafts",
             "layout": {
-                "icon-image": "css/images/aircraft.png"
+                "icon-image": "rocket-15"
             }
         });
 });

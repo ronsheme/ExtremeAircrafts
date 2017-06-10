@@ -3,7 +3,10 @@ package server;
 import akkaLabs.ExtremeAircrafts.http.PositionChangedHttpEntity;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import geojson.AircraftsGeoJSON;
 import geojson.GeoJSON;
+import geojson.GeoJSONFeature;
+import geojson.GeoJSONPoint;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -20,26 +23,22 @@ public class AircraftsResource {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private Map<UUID,Position> positionEvents = new ConcurrentHashMap<>();
+    private AircraftsGeoJSON positions = new AircraftsGeoJSON();
 
     public AircraftsResource(){
 
     }
 
     @GET
-    public Map<UUID,Position> getAircrafts() {
-        return positionEvents;
+    public AircraftsGeoJSON getAircrafts() {
+        return positions;
     }
 
     @POST
     @Path("/update")
     public void addPositionChanged(PositionChangedHttpEntity event){
-//        String data = event.getData().decodeString(event.getContentType().getCharsetOption().get().nioCharset());
-//        try {
-//            PositionChangedHttpEntity entity = mapper.readValue(data,PositionChangedHttpEntity.class);
-            this.positionEvents.put(event.getAircraftId(),event.getPosition());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        Map<String,String> features = new HashMap<>();
+        features.put("uuid",event.getAircraftId().toString());
+        this.positions.addFeature(new GeoJSONFeature(new GeoJSONPoint(event.getPosition().getLongitude(),event.getPosition().getLatitude()),features));
     }
 }

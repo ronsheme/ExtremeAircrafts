@@ -9,9 +9,12 @@ import java.util.Map;
  */
 public class GeoJSONFeature extends GeoJSON{
     private Map<String,String> properties;
-    private AircraftsResource.GeoJSONPoint geometry;
 
-    public GeoJSONFeature(AircraftsResource.GeoJSONPoint point, Map<String,String> properties){
+
+
+    private GeoJSONPoint geometry;
+
+    public GeoJSONFeature(GeoJSONPoint point, Map<String,String> properties){
         this.type = "Feature";
         this.geometry = point;
         this.properties = properties;
@@ -19,5 +22,8 @@ public class GeoJSONFeature extends GeoJSON{
     public Map<String, String> getProperties() {
         return properties;
     }
-    public AircraftsResource.GeoJSONPoint getGeometry(){return this.geometry;}
+    public GeoJSONPoint getGeometry(){return this.geometry;}
+    public void setGeometry(GeoJSONPoint geometry) {
+        this.geometry = geometry;
+    }
 }
