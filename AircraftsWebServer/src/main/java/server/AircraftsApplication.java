@@ -23,5 +23,8 @@ public class AircraftsApplication extends Application<AircraftsConfiguration> {
         httpEntityModule.addDeserializer(PositionChangedHttpEntity.class,new PositionChangedHttpEntityDeserializer());
         bootstrap.getObjectMapper().registerModule(httpEntityModule);
         bootstrap.addBundle(new AssetsBundle("/assets/", "/","index.html"));
+        bootstrap.addBundle(new AssetsBundle("/assets/js/","/js",null,"js"));
+        bootstrap.addBundle(new AssetsBundle("/assets/css/","/css",null,"css"));
+
     }
 }
