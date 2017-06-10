@@ -9,7 +9,7 @@ var map = new mapboxgl.Map({
 // disable map rotation using right click + drag
 map.dragRotate.disable();
 
-var url = 'http://localhost:8080/api/aircrafts';
+var url = document.URL+'api/aircrafts';
 
 map.on('load', function () {
         window.setInterval(function() {
@@ -22,7 +22,7 @@ map.on('load', function () {
             "type": "symbol",
             "source": "aircrafts",
             "layout": {
-                "icon-image": "rocket-15"
+                "icon-image": "airport-15"
             }
         });
 });

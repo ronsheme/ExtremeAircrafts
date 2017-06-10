@@ -22,8 +22,8 @@ import java.util.stream.IntStream;
 import static akkaLabs.ExtremeAircrafts.ExtremeModule.*;
 
 public class Orchestrator extends AbstractActor {
-	private static final int MIN_SPEED = 10;
-	private static final int MAX_SPEED = 200;
+	private static final double MIN_SPEED = 0.001;
+	private static final double MAX_SPEED = 0.007;
 
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 	private final Map<UUID, ActorRef> uuidToActor;

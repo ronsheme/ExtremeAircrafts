@@ -37,7 +37,7 @@ public class Main {
 
 		sky.actorOf(Props.create(HttpUpdater.class,()->new HttpUpdater(eventBus)),"httpUpdater");
 
-		orchestrator.tell(new ModifyAircrafts(10), ActorRef.noSender());
+		orchestrator.tell(new ModifyAircrafts(100), ActorRef.noSender());
 		sky.scheduler().schedule(Duration.Zero(), Duration.create(UPDATE_RATE, TimeUnit.SECONDS), () -> sky.actorSelection(ALL_AIRCRAFTS).tell(new AdvanceMessage(), ActorRef.noSender()), sky.dispatcher());
 
 //		System.out.println("Press any key to terminate...");
