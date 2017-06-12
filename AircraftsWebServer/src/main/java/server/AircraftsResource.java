@@ -39,6 +39,7 @@ public class AircraftsResource {
         Position position = event.getPosition();
         Map<String,String> props = new HashMap<>();
         props.put("uuid",uuid.toString());
+        props.put("heading",Double.toString(event.getHeading()));
         this.positions.updateFeature(new GeoJSONFeaturePoint(new GeoJSONPoint(position.getLongitude(),position.getLatitude()),props));
 
         this.trailer.addTrail(uuid,position);

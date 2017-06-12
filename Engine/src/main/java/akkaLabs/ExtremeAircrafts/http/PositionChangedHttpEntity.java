@@ -20,11 +20,12 @@ public class PositionChangedHttpEntity {
 
     private UUID aircraftId;
     private Position position;
+    private double heading;
 
     public PositionChangedHttpEntity(){}
 
-    public PositionChangedHttpEntity(UUID aircraftId, Position position)
-    {
+    public PositionChangedHttpEntity(UUID aircraftId, Position position,double heading) {
+        this.heading = heading;
         this.aircraftId = aircraftId;
         this.position = position;
     }
@@ -38,4 +39,6 @@ public class PositionChangedHttpEntity {
     {
         return this.position;
     }
+
+    public double getHeading() { return heading; }
 }
