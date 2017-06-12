@@ -3,6 +3,7 @@ package server;
 import akkaLabs.ExtremeAircrafts.position.Position;
 import geojson.GeoJSONFeatureLineString;
 import geojson.GeoJSONLineString;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,11 +14,11 @@ import java.util.stream.Collectors;
  */
 public class Trailer {
 
-    private Map<UUID,Collection<Position>> trails = new ConcurrentHashMap<>();
+    private Map<UUID,CircularFifoQueue<Position>> trails = new ConcurrentHashMap<>();
 
     public void addTrail(UUID uuid,Position newPosition){
         if(!this.trails.containsKey(uuid)){
-            this.trails.put(uuid,new LinkedList<Position>());
+            this.trails.put(uuid,new CircularFifoQueue<>(30));
         }
         this.trails.get(uuid).add(newPosition);
     }
@@ -25,6 +26,6 @@ public class Trailer {
     public GeoJSONFeatureLineString getAsGeoJSON(UUID uuid){
         Map<String,String> props = new HashMap<>();
         props.put("uuid",uuid.toString());
-        return new GeoJSONFeatureLineString(new GeoJSONLineString(trails.get(uuid).stream().map(position->new Double[]{position.getLatitude(),position.getLongitude()}).collect(Collectors.toList())),props);
+        return new GeoJSONFeatureLineString(new GeoJSONLineString(trails.get(uuid).stream().map(position->new Double[]{position.getLongitude(),position.getLatitude()}).collect(Collectors.toList())),props);
     }
 }

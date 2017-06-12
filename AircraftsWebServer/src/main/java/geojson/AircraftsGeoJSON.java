@@ -3,12 +3,13 @@ package geojson;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Created by Ron on 10/06/2017.
  */
 public class AircraftsGeoJSON extends GeoJSON {
-    private Collection<GeoJSONFeature> features = new LinkedList<>();
+    private Collection<GeoJSONFeature> features = new ConcurrentLinkedDeque<>();
 
     public AircraftsGeoJSON(){
         super("FeatureCollection");

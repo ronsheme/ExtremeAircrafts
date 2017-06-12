@@ -24,7 +24,7 @@ public class ExtremeModule extends AbstractModule
 	public static final double MIN_LATITUDE = -90.0;
 
 	public static final double MIN_SPEED = 10000;//meter/second
-	public static final double MAX_SPEED = 13000;//meter/second
+	public static final double MAX_SPEED = 16000;//meter/second
 
 	public static final int UPDATE_RATE = 1;
 

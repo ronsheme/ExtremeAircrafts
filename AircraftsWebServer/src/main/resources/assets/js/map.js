@@ -18,11 +18,26 @@ map.on('load', function () {
 
     map.addSource('aircrafts', { type: 'geojson', data: url });
     map.addLayer({
+                "id": "aircraft_routes",
+                "type": "line",
+                "source": "aircrafts",
+                "layout": {
+                            "line-join": "round",
+                            "line-cap": "round"
+                        },
+                "paint": {
+                             "line-color": "#888",
+                             "line-width": 4
+                         },
+                "filter": ["==", "$type", "LineString"]
+        });
+    map.addLayer({
             "id": "aircrafts",
             "type": "symbol",
             "source": "aircrafts",
             "layout": {
                 "icon-image": "airport-15"
-            }
+            },
+            "filter": ["==", "$type", "Point"]
         });
 });
