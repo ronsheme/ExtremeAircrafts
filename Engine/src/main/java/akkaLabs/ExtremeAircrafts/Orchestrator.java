@@ -22,8 +22,6 @@ import java.util.stream.IntStream;
 import static akkaLabs.ExtremeAircrafts.ExtremeModule.*;
 
 public class Orchestrator extends AbstractActor {
-	private static final double MIN_SPEED = 0.001;
-	private static final double MAX_SPEED = 0.007;
 
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 	private final Map<UUID, ActorRef> uuidToActor;
@@ -51,8 +49,8 @@ public class Orchestrator extends AbstractActor {
 							logger.info("Creating actor #" + i + " uuid:" + uuid.toString());
 							ActorRef newAircraft = getContext().actorOf(getProps(uuid), uuid.toString());
 
-							double latitude = (BOTTOM_RIGHT_LATITUDE - TOP_LEFT_LATITUDE) * Math.random() + TOP_LEFT_LATITUDE;
-							double longitude = (BOTTOM_RIGHT_LONGITUDE - TOP_LEFT_LONGITUDE) * Math.random() + BOTTOM_RIGHT_LONGITUDE;
+							double latitude = (MAX_LATITUDE - MIN_LATITUDE) * Math.random() + MIN_LATITUDE;
+							double longitude = (MAX_LONGITUDE - MIN_LONGITUDE) * Math.random() + MIN_LONGITUDE;
 							newAircraft.tell(new ChangePosition(new Position(longitude, latitude, 15)), ActorRef.noSender());
 							uuidToActor.put(uuid, newAircraft);
 

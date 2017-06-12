@@ -6,6 +6,7 @@ import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvelope;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEvent;
 import akkaLabs.ExtremeAircrafts.eventbus.PositionChangedEventBus;
 import akkaLabs.ExtremeAircrafts.position.Position;
+import akkaLabs.ExtremeAircrafts.util.PositionUtil;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.shape.Point;
 
@@ -45,17 +46,10 @@ public class Aircraft extends AbstractActor {
 
 	private void advance() {
 		long currMillis = System.currentTimeMillis();
-		long timeDelta = currMillis-this.lastUpdateMillis;
+		double timeDeltaSeconds = (currMillis-this.lastUpdateMillis)/1000.0;
 		this.lastUpdateMillis = currMillis;
-		double vLat = speed * Math.sin(heading) / 90;
-		double vLong = speed * Math.cos(heading) / 180;
 
-		double latDist = timeDelta * vLat;
-		double longDist = timeDelta * vLong;
-
-		Position position = location.first();
-
-		this.changePosition(new Position(BOTTOM_RIGHT_LONGITUDE+(position.getLongitude() + longDist)%TOP_LEFT_LONGITUDE, BOTTOM_RIGHT_LATITUDE+(position.getLatitude() + latDist)%TOP_LEFT_LATITUDE, position.getAltitude()));
+		this.changePosition(PositionUtil.calculate(timeDeltaSeconds*this.speed,this.heading,this.getLocation().first()));
 
 		logger.info(uuid + " - has advanced to " + this.location.first());
 

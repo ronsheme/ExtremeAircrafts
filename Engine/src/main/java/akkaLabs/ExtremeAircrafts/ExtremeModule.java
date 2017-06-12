@@ -18,10 +18,13 @@ public class ExtremeModule extends AbstractModule
 	public static final String AIRCRAFT_SERVER_ADDRESS = "http://localhost:8080/api/aircrafts/update";
 	public static final String EVENTBUS_NAME = "positionChangedEventBus";
 
-	public static final double TOP_LEFT_LONGITUDE = 31.7995855;
-	public static final double TOP_LEFT_LATITUDE = 34.673663;
-	public static final double BOTTOM_RIGHT_LONGITUDE = 31.6940723;
-	public static final double BOTTOM_RIGHT_LATITUDE = 34.8884191;
+	public static final double MAX_LONGITUDE = 180.0;
+	public static final double MAX_LATITUDE = 90.0;
+	public static final double MIN_LONGITUDE = -180.0;
+	public static final double MIN_LATITUDE = -90.0;
+
+	public static final double MIN_SPEED = 5000;//meter/second
+	public static final double MAX_SPEED = 6000;//meter/second
 
 	public static final int UPDATE_RATE = 1;
 
