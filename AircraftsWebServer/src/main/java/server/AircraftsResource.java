@@ -2,16 +2,14 @@ package server;
 
 import akkaLabs.ExtremeAircrafts.http.PositionChangedHttpEntity;
 import akkaLabs.ExtremeAircrafts.position.Position;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import geojson.AircraftsGeoJSON;
-import geojson.GeoJSON;
-import geojson.GeoJSONFeature;
+import geojson.GeoJSONFeaturePoint;
 import geojson.GeoJSONPoint;
+import javafx.geometry.Pos;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by ron-lenovo on 5/28/2017.
@@ -21,9 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Produces(MediaType.APPLICATION_JSON)
 public class AircraftsResource {
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     private AircraftsGeoJSON positions = new AircraftsGeoJSON();
+
+    private Trailer trailer = new Trailer();
 
     public AircraftsResource(){
 
@@ -37,8 +35,13 @@ public class AircraftsResource {
     @POST
     @Path("/update")
     public void addPositionChanged(PositionChangedHttpEntity event){
-        Map<String,String> features = new HashMap<>();
-        features.put("uuid",event.getAircraftId().toString());
-        this.positions.addFeature(new GeoJSONFeature(new GeoJSONPoint(event.getPosition().getLongitude(),event.getPosition().getLatitude()),features));
+        UUID uuid = event.getAircraftId();
+        Position position = event.getPosition();
+        Map<String,String> props = new HashMap<>();
+        props.put("uuid",uuid.toString());
+        this.positions.updateFeature(new GeoJSONFeaturePoint(new GeoJSONPoint(position.getLongitude(),position.getLatitude()),props));
+
+        this.trailer.addTrail(uuid,position);
+        this.positions.updateFeature(this.trailer.getAsGeoJSON(uuid));
     }
 }

@@ -1,29 +1,27 @@
 package geojson;
 
-import server.AircraftsResource;
-
 import java.util.Map;
 
 /**
- * Created by Ron on 10/06/2017.
+ * Created by Ron on 12/06/2017.
  */
-public class GeoJSONFeature extends GeoJSON{
-    private Map<String,String> properties;
+public class GeoJSONFeature extends GeoJSON {
 
+    protected GeoJSON geometry;
+    protected Map<String,String> properties;
 
-
-    private GeoJSONPoint geometry;
-
-    public GeoJSONFeature(GeoJSONPoint point, Map<String,String> properties){
-        this.type = "Feature";
-        this.geometry = point;
+    protected GeoJSONFeature(GeoJSON geometry, Map<String, String> properties) {
+        super("Feature");
+        this.geometry = geometry;
         this.properties = properties;
     }
+
+    public GeoJSON getGeometry(){return this.geometry;}
     public Map<String, String> getProperties() {
         return properties;
     }
-    public GeoJSONPoint getGeometry(){return this.geometry;}
-    public void setGeometry(GeoJSONPoint geometry) {
+    public void setGeometry(GeoJSON geometry) {
         this.geometry = geometry;
     }
+
 }
