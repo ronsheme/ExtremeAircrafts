@@ -24,6 +24,7 @@ public class PositionChangedHttpEntityDeserializer extends JsonDeserializer<Posi
         JsonNode positionNode = node.get("position");
         return new PositionChangedHttpEntity(id,new Position(positionNode.get("longitude").asDouble(),
                 positionNode.get("latitude").asDouble(),
-                positionNode.get("altitude").asDouble()));
+                positionNode.get("altitude").asDouble()),
+                node.get("heading").asDouble());
     }
 }

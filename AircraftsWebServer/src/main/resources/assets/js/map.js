@@ -56,11 +56,11 @@ map.on('mouseenter', 'aircrafts', function(e) {
     // Populate the popup and set its coordinates
     // based on the feature found.
     popup.setLngLat(e.features[0].geometry.coordinates)
-                    .setHTML(e.features[0].properties.uuid)
-                    .addTo(map);
+                    .setHTML(e.features[0].properties.uuid);
+    e.setPopup(popup);
     });
 
-map.on('mouseleave', 'places', function() {
+map.on('mouseleave', 'aircrafts', function() {
     map.getCanvas().style.cursor = '';
     popup.remove();
     });

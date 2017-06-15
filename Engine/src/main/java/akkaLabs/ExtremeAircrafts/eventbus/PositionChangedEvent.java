@@ -15,8 +15,10 @@ public class PositionChangedEvent
 	private UUID aircraftId;
 	private Pair<Position,Point> location;
 
-	public PositionChangedEvent(UUID aircraftId, Pair<Position, Point> location)
-	{
+	private double heading;
+
+	public PositionChangedEvent(UUID aircraftId, Pair<Position, Point> location,double heading) {
+		this.heading = heading;
 		this.aircraftId = aircraftId;
 		this.location = location;
 	}
@@ -37,5 +39,9 @@ public class PositionChangedEvent
 	
 	public Point getPoint(){
 		return this.location.second();
+	}
+
+	public double getHeading() {
+		return heading;
 	}
 }

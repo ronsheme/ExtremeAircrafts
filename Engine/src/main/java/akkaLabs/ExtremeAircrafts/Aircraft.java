@@ -49,6 +49,8 @@ public class Aircraft extends AbstractActor {
 		double timeDeltaSeconds = (currMillis-this.lastUpdateMillis)/1000.0;
 		this.lastUpdateMillis = currMillis;
 
+		double random = Math.random();
+		this.heading += random>0.5?random*10:-random*10;
 		this.changePosition(PositionUtil.calculate(timeDeltaSeconds*this.speed,this.heading,this.getLocation().first()));
 
 		logger.info(uuid + " - has advanced to " + this.location.first());
@@ -106,6 +108,6 @@ public class Aircraft extends AbstractActor {
 	}
 
 	private void publishPositionChanged(){
-		eventBus.publish(new PositionChangedEvelope(new PositionChangedEvent(this.uuid, this.location)));
+		eventBus.publish(new PositionChangedEvelope(new PositionChangedEvent(this.uuid, this.location,this.heading)));
 	}
 }

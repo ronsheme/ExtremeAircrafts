@@ -45,7 +45,7 @@ public class HttpUpdater extends AbstractActor {
             logger.info("Sending HTTP request with PositionChangedEvent for aircraft {}", evt.getAircraftId());
             Http http = Http.get(system);
             HttpRequest request = HttpRequest.POST(this.aircraftAddress).withEntity(HttpEntities.create(ContentTypes.APPLICATION_JSON,
-                mapper.writeValueAsString(new PositionChangedHttpEntity(evt.getAircraftId(), evt.getPosition()))));
+                mapper.writeValueAsString(new PositionChangedHttpEntity(evt.getAircraftId(), evt.getPosition(),evt.getHeading()))));
             http.singleRequest(request, materializer);
         }).build();
     }
