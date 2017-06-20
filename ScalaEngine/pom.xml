@@ -29,6 +29,12 @@
             <artifactId>akka-actor_${version.akka.scala}</artifactId>
             <version>${version.akka}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.locationtech.spatial4j</groupId>
+            <artifactId>spatial4j</artifactId>
+            <version>0.6</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
