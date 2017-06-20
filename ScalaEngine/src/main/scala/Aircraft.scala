@@ -9,7 +9,7 @@ import scala.util.Random;
 /**
   * Created by Ron on 19/06/2017.
   */
-class Aircraft(uuid: UUID, speed: Double, heading: Double, spatialContext: SpatialContext) extends Actor {
+class Aircraft(uuid: UUID,var speed: Double, var heading: Double, spatialContext: SpatialContext) extends Actor {
   import Aircraft.randomHeading
 
   val log = Logging(context.system, this)
