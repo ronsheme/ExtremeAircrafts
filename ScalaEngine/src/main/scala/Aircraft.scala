@@ -10,7 +10,7 @@ import scala.util.Random;
 /**
   * Created by Ron on 19/06/2017.
   */
-class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: Position, spatialContext: SpatialContext) extends Actor {
+class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: Position) extends Actor {
   import Aircraft._
 
   val log = Logging(context.system, this)
@@ -44,7 +44,7 @@ object Aircraft {
     * @param uuid The id to be passed to this actor’s constructor.
     * @return a Props for creating this actor
     */
-  def props(uuid: UUID, speed: Double, heading: Double,position: Position, spatialContext: SpatialContext): Props = Props(new Aircraft(uuid, speed, heading, position, spatialContext))
+  def props(uuid: UUID, speed: Double, heading: Double,position: Position): Props = Props(new Aircraft(uuid, speed, heading, position))
 
   def randomHeading():Double = {
     val randomDouble = random.nextDouble

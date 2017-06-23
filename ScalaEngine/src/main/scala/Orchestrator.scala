@@ -16,7 +16,7 @@ import Orchestrator.{randomSpeed,randomHeading}
   override def receive ={
     case AddAircraft =>
       val uuid = UUID.randomUUID()
-      context.actorOf(Aircraft.props(uuid,randomSpeed,randomHeading,randomPosition,spatialContext), uuid.toString)
+      context.actorOf(Aircraft.props(uuid,randomSpeed,randomHeading,randomPosition), uuid.toString)
       log.info("{}: created aircraft with uuid: {}",self.path.name,uuid)
     case _  => log.info("{}: received unknown message",self.path.name)
   }
@@ -31,8 +31,6 @@ object Orchestrator{
   val MAX_LATITUDE = 90.0
   val MIN_LONGITUDE = -180.0
   val MIN_LATITUDE = -90.0
-
-  val spatialContext = new SpatialContextFactory().newSpatialContext()
 
   def randomSpeed = MIN_SPEED + random.nextDouble * MAX_SPEED
   def randomHeading = random.nextDouble * 360
