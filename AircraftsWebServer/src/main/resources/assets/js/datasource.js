@@ -1,3 +1,5 @@
+import {hello} from 'module'
+
 var aircrafts_geoJson = [];
 
 aircrafts_geoJson["type"] = "FeatureCollection";
@@ -19,6 +21,10 @@ function update() {
         var obj = response[currKey];
         aircrafts_geoJson["features"].items.push(obj);
         }
+}
+
+export function getAircrafts(){
+    return aircrafts_geoJson;
 }
 
 while(true){

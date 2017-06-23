@@ -25,7 +25,7 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
     position = PositionUtil.calculate(timeDeltaSeconds * speed, heading, position)
     //TODO continue here
 //    publishPositionChanged();
-    log.info( "{} - has advanced to {}",uuid, position)
+    log.debug( "{} - has advanced to {}",uuid, position)
 }
 
   override def receive = {

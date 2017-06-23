@@ -19,8 +19,6 @@ import akka.japi.Pair;
 
 import java.util.UUID;
 
-import static akkaLabs.ExtremeAircrafts.ExtremeModule.*;
-
 public class Aircraft extends AbstractActor {
 	private final LoggingAdapter logger = Logging.getLogger(getContext().getSystem(), this);
 

@@ -1,3 +1,5 @@
+import {getAircrafts} from 'datasource';
+
 //initialize mapbox
 mapboxgl.accessToken = 'pk.eyJ1Ijoicm9uc2hlbWUiLCJhIjoiY2ozcTU1OGJqMDAzejMybG1wbmJlYnk5dyJ9.0Cmc-BT-eKrWPXc3hZ_8rw';
 var map = new mapboxgl.Map({
@@ -13,7 +15,7 @@ map.dragRotate.disable();
 var url = document.URL+'api/aircrafts';
 map.on('load', function () {
         window.setInterval(function() {
-            map.getSource('aircrafts').setData(url);
+            map.getSource('aircrafts').setData(getAircrafts);
         }, 1000)
 
 //aircrafts data source- both the points of the aircrafts and the trails arrive in the same geojson
@@ -43,25 +45,3 @@ map.addLayer({
             "icon-image": "airport-15"
         },
         "filter": ["==", "$type", "Point"]});//here we separate the aircraft points from the trails
-
-//info popup
-var popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
-    });
-
-map.on('mouseenter', 'aircrafts', function(e) {
-    // Change the cursor style as a UI indicator.
-    map.getCanvas().style.cursor = 'pointer';
-    // Populate the popup and set its coordinates
-    // based on the feature found.
-    popup.setLngLat(e.features[0].geometry.coordinates)
-                    .setHTML(e.features[0].properties.uuid);
-    e.setPopup(popup);
-    });
-
-map.on('mouseleave', 'aircrafts', function() {
-    map.getCanvas().style.cursor = '';
-    popup.remove();
-    });
-});
