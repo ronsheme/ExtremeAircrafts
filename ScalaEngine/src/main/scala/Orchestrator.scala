@@ -25,8 +25,8 @@ import Orchestrator.{randomSpeed,randomHeading}
 object Orchestrator{
   case object AddAircraft
   val random = Random
-  val MIN_SPEED = 10000;//meter/second
-  val MAX_SPEED = 16000;//meter/second
+  val MIN_SPEED = 9000;//meter/second
+  val MAX_SPEED = 13000;//meter/second
   val MAX_LONGITUDE = 180.0
   val MAX_LATITUDE = 90.0
   val MIN_LONGITUDE = -180.0

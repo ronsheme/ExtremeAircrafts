@@ -11,7 +11,7 @@ import scala.util.Random;
   * Created by Ron on 19/06/2017.
   */
 class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: Position, spatialContext: SpatialContext) extends Actor {
-  import Aircraft.randomHeading
+  import Aircraft._
 
   val log = Logging(context.system, this)
   var lastUpdateMillis = System.currentTimeMillis()
@@ -29,15 +29,13 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
 }
 
   override def receive = {
+    case Advance => advance
     case _  => log.info("Aircraft {}: received unknown message",uuid)
-  }
-
-  def changePosition = {
-
   }
 }
 
 object Aircraft {
+  case object Advance
   val random  = Random
 
   /**
