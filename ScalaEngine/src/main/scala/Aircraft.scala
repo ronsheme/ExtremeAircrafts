@@ -1,7 +1,8 @@
 import java.util.UUID
 
-import akka.actor.{Actor, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
+import eventbus.{PositionEnvelope, PositionUpdateBus}
 import org.locationtech.spatial4j.context.SpatialContext
 import position.{Position, PositionUtil}
 
@@ -13,23 +14,23 @@ import scala.util.Random;
 class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: Position) extends Actor {
   import Aircraft._
 
+  subscribePositionUpdate(self)
   val log = Logging(context.system, this)
   var lastUpdateMillis = System.currentTimeMillis()
-
 
   def advance(){
     val currMillis = System.currentTimeMillis()
     val timeDeltaSeconds = (currMillis - this.lastUpdateMillis) / 1000.0
-    lastUpdateMillis = currMillis;
+    lastUpdateMillis = currMillis
     heading += randomHeading
     position = PositionUtil.calculate(timeDeltaSeconds * speed, heading, position)
-    //TODO continue here
-//    publishPositionChanged();
+    publishPositionUpdate(uuid,position)
     log.debug( "{} - has advanced to {}",uuid, position)
 }
 
   override def receive = {
     case Advance => advance
+    case (uuid: UUID,position: Position) => log.info("Received message from event bus. {} moved to {}",uuid,position)
     case _  => log.info("Aircraft {}: received unknown message",uuid)
   }
 }
@@ -54,4 +55,7 @@ object Aircraft {
       -randomDouble * 10
   }
 
+  def publishPositionUpdate(uuid: UUID, position: Position) = PositionUpdateBus.publish(new PositionEnvelope(PositionUpdateBus.POSITION_UPDATE_TOPIC,(uuid,position)))
+
+  def subscribePositionUpdate(subscribet: ActorRef) = PositionUpdateBus.subscribe(subscribet,PositionUpdateBus.POSITION_UPDATE_TOPIC)
 }
