@@ -1,4 +1,4 @@
-import {getAircrafts} from 'datasource';
+//import {getAircrafts} from 'datasource';
 
 //initialize mapbox
 mapboxgl.accessToken = 'pk.eyJ1Ijoicm9uc2hlbWUiLCJhIjoiY2ozcTU1OGJqMDAzejMybG1wbmJlYnk5dyJ9.0Cmc-BT-eKrWPXc3hZ_8rw';
@@ -15,8 +15,8 @@ map.dragRotate.disable();
 var url = document.URL+'api/aircrafts';
 map.on('load', function () {
         window.setInterval(function() {
-            map.getSource('aircrafts').setData(getAircrafts);
-        }, 1000)
+            map.getSource('aircrafts').setData(url);
+        }, 1000);
 
 //aircrafts data source- both the points of the aircrafts and the trails arrive in the same geojson
 map.addSource('aircrafts', { type: 'geojson', data: url });
@@ -44,4 +44,4 @@ map.addLayer({
         "layout": {
             "icon-image": "airport-15"
         },
-        "filter": ["==", "$type", "Point"]});//here we separate the aircraft points from the trails
+        "filter": ["==", "$type", "Point"]})});//here we separate the aircraft points from the trails

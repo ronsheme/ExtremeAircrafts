@@ -3,6 +3,8 @@ import java.util.concurrent.TimeUnit
 import Aircraft.Advance
 import Orchestrator.AddAircraft
 import akka.actor.{ActorRef, ActorSystem, Props}
+import eventbus.PositionUpdateBus
+import http.PositionUpdater
 
 import scala.concurrent.duration.Duration
 
@@ -22,6 +24,8 @@ object EngineMain {
     val system = ActorSystem("AircraftsSystem")
     val orchestrator = system.actorOf(Props[Orchestrator], "Orchestrator")
     1 to NUM_OF_AIRCRAFTS foreach {_=>orchestrator ! AddAircraft}
+
+    system.actorOf(Props[PositionUpdater])
 
     system.scheduler.schedule(Duration.create(WAIT_AIRCRAFTS_CREATION_MS,TimeUnit.MILLISECONDS),
       Duration.create(UPDATE_RATE_MS,TimeUnit.MILLISECONDS),

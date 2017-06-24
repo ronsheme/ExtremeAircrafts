@@ -25,8 +25,8 @@
 		<version.junit>4.12</version.junit>
 
 		<version.akka.scala>2.12</version.akka.scala>
-		<version.akka>2.5.1</version.akka>
-		<version.akka.http>10.0.6</version.akka.http>
+		<version.akka>2.5.3</version.akka>
+		<version.akka.http>10.0.8</version.akka.http>
 		<dropwizard.version>1.1.1</dropwizard.version>
 
 	</properties>

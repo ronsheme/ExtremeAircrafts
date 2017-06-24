@@ -29,6 +29,26 @@
             <artifactId>akka-actor_${version.akka.scala}</artifactId>
             <version>${version.akka}</version>
         </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http_${version.akka.scala}</artifactId>
+            <version>${version.akka.http}</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>io.spray</groupId>-->
+            <!--<artifactId>spray-json_2.11</artifactId>-->
+            <!--<version>1.3.3</version>-->
+        <!--</dependency>-->
+        <dependency><!--TODO: remove-->
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-http-jackson_${version.akka.scala}</artifactId>
+            <version>${version.akka.http}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_${version.akka.scala}</artifactId>
+            <version>${version.akka}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.locationtech.spatial4j</groupId>

@@ -14,7 +14,7 @@ import scala.util.Random
 class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: Position) extends Actor {
   import Aircraft._
 
-  subscribePositionUpdate(self)
+  PositionUpdateBus.subscribePositionUpdate(self)
   val log = Logging(context.system, this)
   var lastUpdateMillis: Long = System.currentTimeMillis()
 
@@ -24,7 +24,7 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
     lastUpdateMillis = currMillis
     heading += randomHeading
     position = PositionUtil.calculate(timeDeltaSeconds * speed, heading, position)
-    publishPositionUpdate(uuid,position)
+    publishPositionUpdate(uuid,position,heading)
     log.debug( "{} - has advanced to {}",uuid, position)
 }
 
@@ -55,7 +55,5 @@ object Aircraft {
       -randomDouble * 10
   }
 
-  def publishPositionUpdate(uuid: UUID, position: Position): Unit = PositionUpdateBus.publish(PositionEnvelope(PositionUpdateBus.POSITION_UPDATE_TOPIC,(uuid,position)))
-
-  def subscribePositionUpdate(subscribet: ActorRef): Boolean = PositionUpdateBus.subscribe(subscribet,PositionUpdateBus.POSITION_UPDATE_TOPIC)
+  def publishPositionUpdate(uuid: UUID, position: Position,heading: Double): Unit = PositionUpdateBus.publish(PositionEnvelope(PositionUpdateBus.POSITION_UPDATE_TOPIC,(uuid,position,heading)))
 }
