@@ -6,7 +6,7 @@ import eventbus.{PositionEnvelope, PositionUpdateBus}
 import org.locationtech.spatial4j.context.SpatialContext
 import position.{Position, PositionUtil}
 
-import scala.util.Random;
+import scala.util.Random
 
 /**
   * Created by Ron on 19/06/2017.
@@ -16,10 +16,10 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
 
   subscribePositionUpdate(self)
   val log = Logging(context.system, this)
-  var lastUpdateMillis = System.currentTimeMillis()
+  var lastUpdateMillis: Long = System.currentTimeMillis()
 
   def advance(){
-    val currMillis = System.currentTimeMillis()
+    val currMillis = System currentTimeMillis
     val timeDeltaSeconds = (currMillis - this.lastUpdateMillis) / 1000.0
     lastUpdateMillis = currMillis
     heading += randomHeading
@@ -28,10 +28,10 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
     log.debug( "{} - has advanced to {}",uuid, position)
 }
 
-  override def receive = {
-    case Advance => advance
-    case (uuid: UUID,position: Position) => log.info("Received message from event bus. {} moved to {}",uuid,position)
-    case _  => log.info("Aircraft {}: received unknown message",uuid)
+  override def receive: PartialFunction[Any, Unit] = {
+    case Advance => advance()
+    case (uuid: UUID,position: Position) => log.debug(s"Received message from event bus. $uuid moved to $position")
+    case _  => log.info("received unknown message")
   }
 }
 
@@ -55,7 +55,7 @@ object Aircraft {
       -randomDouble * 10
   }
 
-  def publishPositionUpdate(uuid: UUID, position: Position) = PositionUpdateBus.publish(new PositionEnvelope(PositionUpdateBus.POSITION_UPDATE_TOPIC,(uuid,position)))
+  def publishPositionUpdate(uuid: UUID, position: Position): Unit = PositionUpdateBus.publish(PositionEnvelope(PositionUpdateBus.POSITION_UPDATE_TOPIC,(uuid,position)))
 
-  def subscribePositionUpdate(subscribet: ActorRef) = PositionUpdateBus.subscribe(subscribet,PositionUpdateBus.POSITION_UPDATE_TOPIC)
+  def subscribePositionUpdate(subscribet: ActorRef): Boolean = PositionUpdateBus.subscribe(subscribet,PositionUpdateBus.POSITION_UPDATE_TOPIC)
 }

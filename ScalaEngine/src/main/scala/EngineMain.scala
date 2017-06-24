@@ -11,7 +11,7 @@ import scala.concurrent.duration.Duration
   */
 object EngineMain {
   val ORCHESTRATOR_ACTOR = "Orchestrator"
-  val ALL_AIRCRAFT_ACTORS = "/user/" + ORCHESTRATOR_ACTOR + "/*"
+  val ALL_AIRCRAFT_ACTORS: String = "/user/" + ORCHESTRATOR_ACTOR + "/*"
   val UPDATE_RATE_MS = 2000
   val WAIT_AIRCRAFTS_CREATION_MS = 500
   val NUM_OF_AIRCRAFTS = 20
