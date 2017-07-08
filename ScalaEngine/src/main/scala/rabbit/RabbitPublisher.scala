@@ -25,7 +25,7 @@ class RabbitPublisher extends Actor{
 
 object RabbitPublisher{
   val QUEUE_NAME = "hello"
-  val HOST = "192.168.198.133"//address of vm that hosts the docker
+  val HOST = "192.168.1.107"//address of vm that hosts the docker
 
   //sanity check
   def main(args: Array[String]): Unit = {
