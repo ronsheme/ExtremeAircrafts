@@ -1,33 +1,35 @@
-import {hello} from 'module'
+class Datasource{
+   async sleep(ms) {
+              return new Promise(resolve => setTimeout(resolve, ms));
+          }
 
-var aircrafts_geoJson = [];
+          update() {
+              this.xhttp.open("GET", this.url, false);
+              this.xhttp.setRequestHeader("Content-type", "application/json");
+              this.xhttp.send();
+              var response = JSON.parse(xhttp.responseText);
+              this.aircrafts_geoJson = response;
+      //    var keys = Object.keys(response);
+      //    for (var i = 0; i < Object.keys(response).length; i++){
+      //        var currKey = keys[i];
+      //        var obj = response[currKey];
+      //        aircrafts_geoJson["features"].items.push(obj);
+      //        }
+          }
 
-aircrafts_geoJson["type"] = "FeatureCollection";
-aircrafts_geoJson["features"] = [];
-
-async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function update() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "http://localhost:8080/api/aircrafts", false);
-    xhttp.setRequestHeader("Content-type", "application/json");
-    xhttp.send();
-    var response = JSON.parse(xhttp.responseText);
-    var keys = Object.keys(response);
-    for (var i = 0; i < Object.keys(response).length; i++){
-        var currKey = keys[i];
-        var obj = response[currKey];
-        aircrafts_geoJson["features"].items.push(obj);
-        }
-}
-
-export function getAircrafts(){
-    return aircrafts_geoJson;
-}
-
-while(true){
-    update();
-    await sleep(1000);
+   async autoUpdate(){
+           while(true){
+               this.update();
+               await this.sleep(1000);
+           }
+       }
+   constructor(){
+    this.aircrafts_geoJson = [];
+    this.xhttp = new XMLHttpRequest();
+    this.url = document.URL+'api/aircrafts';
+    this.autoUpdate();
+   }
+    get aircrafts(){
+        return this.aircrafts_geoJson;
+    }
 }

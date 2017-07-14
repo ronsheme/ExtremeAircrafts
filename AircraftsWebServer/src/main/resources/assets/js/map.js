@@ -14,8 +14,9 @@ map.dragRotate.disable();
 //setup auto update of data from url
 var url = document.URL+'api/aircrafts';
 map.on('load', function () {
+        var datasource = new Datasource();
         window.setInterval(function() {
-            map.getSource('aircrafts').setData(url);
+            map.getSource('aircrafts').setData(datasource.aircrafts);
         }, 1000);
 
 //aircrafts data source- both the points of the aircrafts and the trails arrive in the same geojson
