@@ -7,7 +7,7 @@ class Datasource{
               this.xhttp.open("GET", this.url, false);
               this.xhttp.setRequestHeader("Content-type", "application/json");
               this.xhttp.send();
-              var response = JSON.parse(xhttp.responseText);
+              var response = JSON.parse(this.xhttp.responseText);
               this.aircrafts_geoJson = response;
       //    var keys = Object.keys(response);
       //    for (var i = 0; i < Object.keys(response).length; i++){
