@@ -30,7 +30,7 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
 
   override def receive: PartialFunction[Any, Unit] = {
     case Advance => advance()
-    case (uuid: UUID,position: Position) => log.debug(s"Received message from event bus. $uuid moved to $position")
+    case (uuid: UUID,position: Position,heading:Double) => log.debug(s"Received message from event bus. $uuid moved to $position")
     case _  => log.info("received unknown message")
   }
 }

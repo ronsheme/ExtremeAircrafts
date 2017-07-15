@@ -30,6 +30,16 @@
             <version>4.1.1</version>
         </dependency>
         <dependency>
+            <groupId>com.propensive</groupId>
+            <artifactId>rapture_2.12</artifactId>
+            <version>2.0.0-M9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.propensive</groupId>
+            <artifactId>rapture-json-play_2.12</artifactId>
+            <version>2.0.0-M9</version>
+        </dependency>
+        <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_${version.akka.scala}</artifactId>
             <version>${version.akka}</version>

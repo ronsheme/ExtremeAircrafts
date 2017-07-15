@@ -9,12 +9,6 @@ class Datasource{
               this.xhttp.send();
               var response = JSON.parse(this.xhttp.responseText);
               this.aircrafts_geoJson = response;
-      //    var keys = Object.keys(response);
-      //    for (var i = 0; i < Object.keys(response).length; i++){
-      //        var currKey = keys[i];
-      //        var obj = response[currKey];
-      //        aircrafts_geoJson["features"].items.push(obj);
-      //        }
           }
 
    async autoUpdate(){

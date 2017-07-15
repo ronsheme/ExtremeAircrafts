@@ -5,12 +5,15 @@ import java.util.UUID
 import akka.actor.Actor
 import akka.event.Logging
 import com.rabbitmq.client.{Channel, Connection, ConnectionFactory}
-
+import eventbus.PositionUpdateBus
+import position.Position
+import rapture.json.jsonBackends.play._
+import rapture.json._
 /**
   * Created by ron-lenovo on 7/8/2017.
   */
-class RabbitPublisher extends Actor{
-  import RabbitPublisher._
+class RabbitPositionPublisher extends Actor{
+  import RabbitPositionPublisher._
 
   val log = Logging(context.system,this)
 
@@ -20,12 +23,19 @@ class RabbitPublisher extends Actor{
   val channel:Channel = connection.createChannel()
   channel.exchangeDeclare(TOPIC_NAME,"fanout")
   sys.addShutdownHook(close())
+  PositionUpdateBus.subscribePositionUpdate(self)
 
   override def receive: Receive = {
     case (uuid: UUID,position: position.Position,heading: Double) => {
       log.info(s"Publishing with new position for aircraft $uuid")
+
+      val eventJson = json"""{
+                          "uuid": ${uuid.toString},
+                          "position": ${Json(position)},
+                          "heading": $heading
+                      }"""
+      println(eventJson.toString())
       channel.basicPublish(TOPIC_NAME,"",null,position.toString.getBytes())
-      //TODO set the message to be a json containing the needed values similarly to PositionChangedHttpEntity
     }
     case x => log.info(s"recevied unknown message.$x")
   }
@@ -36,12 +46,17 @@ class RabbitPublisher extends Actor{
   }
 }
 
-object RabbitPublisher{
+object RabbitPositionPublisher{
   val TOPIC_NAME = "position_updates"
   val HOST = "192.168.1.107"//address of vm that hosts the docker
 
-  //sanity check
-  def main(args: Array[String]): Unit = {
-
-  }
+  implicit val positionSerializer: rapture.data.Serializer[Position, Json] =
+    Json.serializer[Json].contramap {
+      position: Position =>
+        json"""{
+              "longitude": ${position.longitude},
+              "latitude": ${position.latitude},
+              "altitude": ${position.altitude}
+              }"""
+    }
 }
