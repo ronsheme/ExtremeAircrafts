@@ -29,13 +29,13 @@ class RabbitPositionPublisher extends Actor{
     case (uuid: UUID,position: position.Position,heading: Double) => {
       log.info(s"Publishing with new position for aircraft $uuid")
 
-      val eventJson = json"""{
+      val eventJson:Json = json"""{
                           "uuid": ${uuid.toString},
                           "position": ${Json(position)},
                           "heading": $heading
                       }"""
-      println(eventJson.toString())
-      channel.basicPublish(TOPIC_NAME,"",null,position.toString.getBytes())
+      println(eventJson)
+      channel.basicPublish(TOPIC_NAME,"",null,eventJson.toString.getBytes())
     }
     case x => log.info(s"recevied unknown message.$x")
   }
@@ -48,7 +48,7 @@ class RabbitPositionPublisher extends Actor{
 
 object RabbitPositionPublisher{
   val TOPIC_NAME = "position_updates"
-  val HOST = "192.168.1.107"//address of vm that hosts the docker
+  val HOST = "192.168.1.110"//address of vm that hosts the docker
 
   implicit val positionSerializer: rapture.data.Serializer[Position, Json] =
     Json.serializer[Json].contramap {
