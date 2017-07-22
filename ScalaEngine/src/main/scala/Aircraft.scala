@@ -23,6 +23,7 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
     val timeDeltaSeconds = (currMillis - this.lastUpdateMillis) / 1000.0
     lastUpdateMillis = currMillis
     heading += randomHeading
+    heading %= 360
     position = PositionUtil.calculate(timeDeltaSeconds * speed, heading, position)
     publishPositionUpdate(uuid,position,heading)
     log.debug( "{} - has advanced to {}",uuid, position)

@@ -20,7 +20,9 @@ public class AircraftsGeoJSON extends GeoJSON {
     public synchronized void updateFeature(GeoJSONFeature feature){
         Optional<GeoJSONFeature> optionalFeature = findFeatureByUUID(feature);
         if(optionalFeature.isPresent()){
-            optionalFeature.get().setGeometry(feature.getGeometry());
+            GeoJSONFeature existingFeature = optionalFeature.get();
+            existingFeature.setGeometry(feature.getGeometry());
+            existingFeature.setProperties(feature.getProperties());
         } else {
             this.features.add(feature);
         }

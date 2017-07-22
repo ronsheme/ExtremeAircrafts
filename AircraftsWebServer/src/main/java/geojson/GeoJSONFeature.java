@@ -23,5 +23,8 @@ public class GeoJSONFeature extends GeoJSON {
     public void setGeometry(GeoJSON geometry) {
         this.geometry = geometry;
     }
+    public void setProperties(Map<String,String> newProps){
+        this.properties = newProps;
+    }
 
 }
