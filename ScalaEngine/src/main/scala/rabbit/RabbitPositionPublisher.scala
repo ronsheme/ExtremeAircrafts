@@ -26,7 +26,7 @@ class RabbitPositionPublisher extends Actor{
   PositionUpdateBus.subscribePositionUpdate(self)
 
   override def receive: Receive = {
-    case (uuid: UUID,position: position.Position,heading: Double) => {
+    case (uuid: UUID,position: position.Position,heading: Double) =>
       log.info(s"Publishing with new position for aircraft $uuid")
 
       val eventJson:Json = json"""{
@@ -34,9 +34,7 @@ class RabbitPositionPublisher extends Actor{
                           "position": ${Json(position)},
                           "heading": $heading
                       }"""
-      println(eventJson)
-      channel.basicPublish(TOPIC_NAME,"",null,eventJson.toString.getBytes())
-    }
+      channel.basicPublish(TOPIC_NAME,"",null,eventJson.toBareString.getBytes())
     case x => log.info(s"recevied unknown message.$x")
   }
 
