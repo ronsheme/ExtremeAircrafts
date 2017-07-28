@@ -5,6 +5,7 @@ import Orchestrator.AddAircraft
 import akka.actor.{ActorRef, ActorSystem, Props}
 import eventbus.PositionUpdateBus
 import http.PositionUpdater
+import kafka.KafkaPositionPublisher
 import rabbit.RabbitPositionPublisher
 
 import scala.concurrent.duration.Duration
@@ -15,7 +16,7 @@ import scala.concurrent.duration.Duration
 object EngineMain {
   val ORCHESTRATOR_ACTOR = "Orchestrator"
   val ALL_AIRCRAFT_ACTORS: String = "/user/" + ORCHESTRATOR_ACTOR + "/*"
-  val UPDATE_RATE_MS = 2000
+  val UPDATE_RATE_MS = 3000
   val WAIT_AIRCRAFTS_CREATION_MS = 500
   val NUM_OF_AIRCRAFTS = 20
 
@@ -27,7 +28,8 @@ object EngineMain {
     1 to NUM_OF_AIRCRAFTS foreach {_=>orchestrator ! AddAircraft}
 
 //    system.actorOf(Props[PositionUpdater])
-    system.actorOf(Props[RabbitPositionPublisher])
+    system.actorOf(Props[KafkaPositionPublisher])
+    //    system.actorOf(Props[RabbitPositionPublisher])
 
     system.scheduler.schedule(Duration.create(WAIT_AIRCRAFTS_CREATION_MS,TimeUnit.MILLISECONDS),
       Duration.create(UPDATE_RATE_MS,TimeUnit.MILLISECONDS),

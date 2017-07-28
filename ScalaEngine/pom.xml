@@ -64,6 +64,17 @@
             <artifactId>akka-stream_${version.akka.scala}</artifactId>
             <version>${version.akka}</version>
         </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream-kafka_${version.akka.scala}</artifactId>
+            <version>${version.akka.streams-kafka}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream_${version.akka.scala}</artifactId>
+            <version>${version.akka}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.locationtech.spatial4j</groupId>

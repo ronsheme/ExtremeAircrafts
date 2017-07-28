@@ -9,7 +9,6 @@ import akka.http.scaladsl.model._
 import akka.stream.ActorMaterializer
 import com.fasterxml.jackson.databind.ObjectMapper
 import eventbus.PositionUpdateBus
-import position.Position
 
 /**
   * Created by Ron on 24/06/2017.
