@@ -31,9 +31,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-scala_${version.flink.scala}</artifactId>
-            <version>${version.jackson}</version>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-native_${version.flink.scala}</artifactId>
+            <version>${version.json4s}</version>
         </dependency>
     </dependencies>
 </project>

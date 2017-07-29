@@ -8,13 +8,12 @@ import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironm
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
 import serialize.PositionHeadingSchema
 import org.apache.flink.streaming.api.scala._
-
 class Recorder {
-
   import Recorder._
 
   implicit val typeInfo: TypeInformation[PositionHeading] = createTypeInformation[PositionHeading]
   val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
+  env.getConfig.enableForceKryo()
   val messageStream: DataStream[PositionHeading] = env.addSource(new FlinkKafkaConsumer010[PositionHeading](TOPIC_NAME, new PositionHeadingSchema, props))
   messageStream.map(positionHeading => println(positionHeading.heading))
   env.execute()

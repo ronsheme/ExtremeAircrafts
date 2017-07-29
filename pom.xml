@@ -36,6 +36,7 @@
 		<version.flink.scala>2.11</version.flink.scala>
 		<version.flink.kafka-connector>0.10</version.flink.kafka-connector>
 		<version.jackson>2.9.0.pr3</version.jackson>
+		<version.json4s>3.5.2</version.json4s>
 
 	</properties>
 
