@@ -11,8 +11,39 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-kafka</artifactId>
-            <version>${version.flink.kafka-connector}</version>
+            <artifactId>flink-connector-kafka-${version.flink.kafka-connector}_${version.flink.scala}</artifactId>
+            <version>${version.flink}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-scala_${version.flink.scala}</artifactId>
+            <version>${version.flink}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-core</artifactId>
+            <version>${version.flink}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-scala_${version.flink.scala}</artifactId>
+            <version>${version.flink}</version>
+        </dependency>
+        <dependency><!--TODO: temp. remove when possible-->
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${version.flink.scala}</artifactId>
+            <version>${version.kafka}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.propensive</groupId>
+            <artifactId>rapture_${version.flink.scala}</artifactId>
+            <version>${version.rapture}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.propensive</groupId>
+            <artifactId>rapture-json-play_${version.flink.scala}</artifactId>
+            <version>${version.rapture}</version>
         </dependency>
     </dependencies>
 </project>

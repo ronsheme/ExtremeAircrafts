@@ -2,16 +2,17 @@ package kafka
 
 import java.util.{Properties, UUID}
 
-import position.Position
 import rapture.json.Json
 import akka.actor.Actor
 import akka.event.Logging
 import eventbus.PositionUpdateBus
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
+import position.Position
 import rapture.json.jsonBackends.play._
 import rapture.json._
 
 class KafkaPositionPublisher extends Actor {
+
   import KafkaPositionPublisher._
 
   val kafkaProducer = new KafkaProducer[String, String](props)
@@ -23,17 +24,16 @@ class KafkaPositionPublisher extends Actor {
     case (uuid: UUID, position: position.Position, heading: Double) =>
       val toSend =
         json"""{
-                          "uuid": ${uuid.toString},
                           "position": ${Json(position)},
                           "heading": $heading
                       }""".toBareString
       log.info(s"Producing to kafka $toSend")
-      kafkaProducer.send(new ProducerRecord(TOPIC_NAME, toSend))
+      kafkaProducer.send(new ProducerRecord(TOPIC_NAME, s"$uuid", toSend))
     case x => log.info(s"recevied unknown message.$x")
   }
 
   def close(): Unit = {
-      kafkaProducer.close()
+    kafkaProducer.close()
   }
 }
 
