@@ -3,7 +3,6 @@ import java.util.concurrent.TimeUnit
 import Aircraft.Advance
 import Orchestrator.AddAircraft
 import akka.actor.{ActorRef, ActorSystem, Props}
-import eventbus.PositionUpdateBus
 import http.PositionUpdater
 import kafka.KafkaPositionPublisher
 import rabbit.RabbitPositionPublisher

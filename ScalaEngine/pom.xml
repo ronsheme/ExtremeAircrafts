@@ -31,13 +31,13 @@
         </dependency>
         <dependency>
             <groupId>com.propensive</groupId>
-            <artifactId>rapture_2.12</artifactId>
-            <version>2.0.0-M9</version>
+            <artifactId>rapture_${version.akka.scala}</artifactId>
+            <version>${version.rapture}</version>
         </dependency>
         <dependency>
             <groupId>com.propensive</groupId>
-            <artifactId>rapture-json-play_2.12</artifactId>
-            <version>2.0.0-M9</version>
+            <artifactId>rapture-json-play_${version.akka.scala}</artifactId>
+            <version>${version.rapture}</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
@@ -49,32 +49,17 @@
             <artifactId>akka-http_${version.akka.scala}</artifactId>
             <version>${version.akka.http}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.spray</groupId>-->
-            <!--<artifactId>spray-json_2.11</artifactId>-->
-            <!--<version>1.3.3</version>-->
-        <!--</dependency>-->
-        <dependency><!--TODO: remove-->
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-http-jackson_${version.akka.scala}</artifactId>
-            <version>${version.akka.http}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream_${version.akka.scala}</artifactId>
-            <version>${version.akka}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-stream-kafka_${version.akka.scala}</artifactId>
-            <version>${version.akka.streams-kafka}</version>
-        </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-stream_${version.akka.scala}</artifactId>
             <version>${version.akka}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${version.akka.scala}</artifactId>
+            <version>${version.kafka}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.locationtech.spatial4j</groupId>
