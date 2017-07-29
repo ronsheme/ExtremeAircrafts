@@ -10,17 +10,17 @@ import serialize.PositionHeadingSchema
 import org.apache.flink.streaming.api.scala._
 
 class Recorder {
+
   import Recorder._
 
-    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
-    val messageStream: DataStream[PositionHeading] = env.addSource(new FlinkKafkaConsumer010[PositionHeading](TOPIC_NAME, new PositionHeadingSchema, props))
-    messageStream.map(positionHeading=>println(positionHeading.heading))
-    env.execute()
-
   implicit val typeInfo: TypeInformation[PositionHeading] = createTypeInformation[PositionHeading]
+  val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
+  val messageStream: DataStream[PositionHeading] = env.addSource(new FlinkKafkaConsumer010[PositionHeading](TOPIC_NAME, new PositionHeadingSchema, props))
+  messageStream.map(positionHeading => println(positionHeading.heading))
+  env.execute()
 }
 
-object Recorder{
+object Recorder {
   val TOPIC_NAME = "position_updates"
   val HOST = "localhost"
   //address of vm that hosts kafka.

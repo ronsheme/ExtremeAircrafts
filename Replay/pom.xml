@@ -29,21 +29,11 @@
             <artifactId>flink-streaming-scala_${version.flink.scala}</artifactId>
             <version>${version.flink}</version>
         </dependency>
-        <dependency><!--TODO: temp. remove when possible-->
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_${version.flink.scala}</artifactId>
-            <version>${version.kafka}</version>
-        </dependency>
 
         <dependency>
-            <groupId>com.propensive</groupId>
-            <artifactId>rapture_${version.flink.scala}</artifactId>
-            <version>${version.rapture}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.propensive</groupId>
-            <artifactId>rapture-json-play_${version.flink.scala}</artifactId>
-            <version>${version.rapture}</version>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${version.flink.scala}</artifactId>
+            <version>${version.jackson}</version>
         </dependency>
     </dependencies>
 </project>

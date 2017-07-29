@@ -2,36 +2,24 @@ package serialize
 
 import java.nio.charset.Charset
 
-import datatypes.{Position, PositionHeading}
-import org.apache.flink.api.common.typeinfo.{BasicTypeInfo, TypeInformation}
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala._
+import datatypes.PositionHeading
 import org.apache.flink.streaming.util.serialization.{DeserializationSchema, SerializationSchema}
-import rapture.json.jsonBackends.play._
-import rapture.json._
 
 class PositionHeadingSchema extends DeserializationSchema[PositionHeading] with  SerializationSchema[PositionHeading]{
-  val deserializer = new PositionHeadingDeserializer
+  val mapper = new ObjectMapper()
+
+  implicit val typeInfo: TypeInformation[PositionHeading] = createTypeInformation[PositionHeading]
+
   override def isEndOfStream(t: PositionHeading): Boolean = {false;}
 
-  override def deserialize(bytes: Array[Byte]): PositionHeading = deserializer.deserialize(null,bytes)
+  override def deserialize(bytes: Array[Byte]): PositionHeading = mapper.readValue(bytes,classOf[PositionHeading])
 
   override def serialize(t: PositionHeading): Array[Byte] = {
-    val eventJson:Json = json"""{
-                          "position": ${Json(t.position)},
-                          "heading": ${t.heading}
-                      }"""
-    eventJson.toBareString.getBytes
+    mapper.writeValueAsBytes(t)
   }
 
-  override def getProducedType: TypeInformation[PositionHeading] = createTypeInformation[PositionHeading]
-
-  implicit val positionSerializer: rapture.data.Serializer[Position, Json] =
-    Json.serializer[Json].contramap {
-      position: Position =>
-        json"""{
-              "longitude": ${position.longitude},
-              "latitude": ${position.latitude},
-              "altitude": ${position.altitude}
-              }"""
-    }
+  override def getProducedType: TypeInformation[PositionHeading] = typeInfo
 }

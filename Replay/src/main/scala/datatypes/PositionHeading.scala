@@ -1,3 +1,3 @@
 package datatypes
 
-class PositionHeading(val position:Position,val heading: Double)
+class PositionHeading(val position:Position = null,val heading: Double = 0)
