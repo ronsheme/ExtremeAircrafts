@@ -19,7 +19,7 @@ class PositionUpdater extends Actor{
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
   val log = Logging(context.system, this)
-  val uri = Uri.from(scheme = "http",host = "localhost",port = 8080, path = "/api/aircrafts/update")
+  val uri = Uri.from(scheme = "http",host = "localhost",port = 12345, path = "/api/aircrafts/update")
   val mapper = new ObjectMapper()
 
   PositionUpdateBus.subscribePositionUpdate(self)

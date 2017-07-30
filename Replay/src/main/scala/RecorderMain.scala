@@ -1,6 +1,6 @@
 import record.Recorder
 
-object ReplayMain {
+object RecorderMain {
   def main(args: Array[String]): Unit = {
     new Recorder()
   }

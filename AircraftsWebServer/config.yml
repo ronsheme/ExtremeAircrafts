@@ -11,7 +11,7 @@ server:
   rootPath: '/api/*'
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 12345
 #    - type: https
 #      port: 8443
 #      keyStorePath: example.keystore
@@ -23,7 +23,7 @@ server:
     #  keyStorePassword: example
   adminConnectors:
     - type: http
-      port: 8081
+      port: 12346
 #    - type: https
 #      port: 8444
 #      keyStorePath: example.keystore
