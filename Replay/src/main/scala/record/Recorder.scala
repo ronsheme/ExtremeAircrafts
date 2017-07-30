@@ -4,6 +4,7 @@ import java.util.{Properties, UUID}
 
 import datatypes.PositionHeading
 import org.apache.flink.api.common.typeinfo.TypeInformation
+import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
 import org.apache.flink.streaming.api.scala._
@@ -17,7 +18,9 @@ class Recorder {
   env.getConfig.enableForceKryo()
   val messageStream: DataStream[Tuple2[UUID,PositionHeading]] = env.addSource(new FlinkKafkaConsumer010(TOPIC_NAME, new PositionHeadingSchema, props))
   messageStream.keyBy(0).map(new EntityState())
-  env.execute()
+  env.enableCheckpointing(1000)
+  env.setStateBackend(new FsStateBackend("file:///tmp/checkpoints",true))
+  env.execute("extremeAircraftsRecorder")
 }
 
 object Recorder {
