@@ -18,7 +18,7 @@ class Recorder {
   env.getConfig.enableForceKryo()
   val messageStream: DataStream[Tuple2[UUID,PositionHeading]] = env.addSource(new FlinkKafkaConsumer010(TOPIC_NAME, new PositionHeadingSchema, props))
   messageStream.keyBy(0).map(new EntityState())
-  env.enableCheckpointing(1000)
+  env.enableCheckpointing(2000)
   env.setStateBackend(new FsStateBackend("file:///tmp/checkpoints",true))
   env.execute("extremeAircraftsRecorder")
 }

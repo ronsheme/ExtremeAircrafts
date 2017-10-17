@@ -6,11 +6,20 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.css' rel='stylesheet'/>
     <link rel="stylesheet" href="css/index.css">
+    <!--for GoldenLayout-->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="https://golden-layout.com/files/latest/js/goldenlayout.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-base.css" />
+    <link type="text/css" rel="stylesheet" href="https://golden-layout.com/files/latest/css/goldenlayout-dark-theme.css" />
+
 </head>
 <body>
-    <div id='map'></div>
+    <div id="wrapper">
+        <div id="map"></div>
+        <div id="layoutContainer"></div>
+    </div>
     <script src="js/datasource.js"></script>
+    <script src="js/goldenlayout.js"></script>
     <script src="js/map.js"></script>
-    <!--<script src="js/datasource.js"></script>-->
 </body>
 </html>
