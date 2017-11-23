@@ -1,4 +1,4 @@
-package rabbit
+package actors.rabbit
 
 import com.rabbitmq.client._
 

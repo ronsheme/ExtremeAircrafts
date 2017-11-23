@@ -1,8 +1,9 @@
+package actors
+
 import java.util.UUID
 
-import Orchestrator._
-import akka.actor.{Actor, ActorLogging, Props}
-import org.locationtech.spatial4j.context.SpatialContextFactory
+import actors.AutonomousAircraftsGenerator.{AddRandomAircraft, initPosition}
+import akka.actor.{Actor, ActorLogging}
 import position.Position
 
 import scala.util.Random
@@ -10,23 +11,23 @@ import scala.util.Random
 /**
   * Created by Ron on 19/06/2017.
   */
-class Orchestrator extends Actor with ActorLogging {
-import Orchestrator.{initSpeed,intiHeading}
+class AutonomousAircraftsGenerator extends Actor with ActorLogging {
+import AutonomousAircraftsGenerator.{initSpeed, intiHeading}
 
   override def receive: PartialFunction[Any, Unit] ={
-    case AddAircraft =>
+    case AddRandomAircraft =>
       val uuid = UUID.randomUUID()
-      context.actorOf(Aircraft.props(uuid,initSpeed,intiHeading,initPosition), uuid.toString)
-      log.info("{}: created aircraft with uuid: {}",self.path.name,uuid)
+      context.actorOf(AutonomousAircraft.props(uuid,initSpeed,intiHeading,initPosition), uuid.toString)
+      log.info("{}: created random aircraft with uuid: {}",self.path.name,uuid)
     case _  => log.info("{}: received unknown message",self.path.name)
   }
 }
 
-object Orchestrator{
-  case object AddAircraft
+object AutonomousAircraftsGenerator{
+  case object AddRandomAircraft
   val random = Random
-  val MIN_SPEED = 9000;//meter/second
-  val MAX_SPEED = 13000;//meter/second
+  val MIN_SPEED = 3000;//meter/second
+  val MAX_SPEED = 5000;//meter/second
   val MAX_LONGITUDE = 180.0
   val MAX_LATITUDE = 90.0
   val MIN_LONGITUDE: Double = -180.0

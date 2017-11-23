@@ -1,4 +1,4 @@
-package http
+package actors.http
 
 import java.util.UUID
 
@@ -16,10 +16,10 @@ import eventbus.PositionUpdateBus
   * This actor listens to the position updates event bus and forward the messages to some REST server
   */
 class PositionUpdater extends Actor{
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  implicit val system: ActorSystem = ActorSystem()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
   val log = Logging(context.system, this)
-  val uri = Uri.from(scheme = "http",host = "localhost",port = 12345, path = "/api/aircrafts/update")
+  val uri: Uri = Uri.from(scheme = "http",host = "localhost",port = 12345, path = "/api/aircrafts/update")
   val mapper = new ObjectMapper()
 
   PositionUpdateBus.subscribePositionUpdate(self)

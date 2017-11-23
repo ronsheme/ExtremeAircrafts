@@ -1,9 +1,10 @@
+package actors
+
 import java.util.UUID
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.Logging
 import eventbus.{PositionEnvelope, PositionUpdateBus}
-import org.locationtech.spatial4j.context.SpatialContext
 import position.{Position, PositionUtil}
 
 import scala.util.Random
@@ -11,12 +12,11 @@ import scala.util.Random
 /**
   * Created by Ron on 19/06/2017.
   */
-class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: Position) extends Actor {
-  import Aircraft._
+class AutonomousAircraft(uuid: UUID, var speed: Double, var heading: Double, var position: Position) extends Actor with ActorLogging{
+  import AutonomousAircraft._
 
   PositionUpdateBus.subscribePositionUpdate(self)
-  val log = Logging(context.system, this)
-  var lastUpdateMillis: Long = System.currentTimeMillis()
+  var lastUpdateMillis: Long = System currentTimeMillis
 
   def advance(){
     val currMillis = System currentTimeMillis
@@ -36,7 +36,7 @@ class Aircraft(uuid: UUID,var speed: Double, var heading: Double,var position: P
   }
 }
 
-object Aircraft {
+object AutonomousAircraft {
   case object Advance
   val random  = Random
 
@@ -46,7 +46,7 @@ object Aircraft {
     * @param uuid The id to be passed to this actor’s constructor.
     * @return a Props for creating this actor
     */
-  def props(uuid: UUID, speed: Double, heading: Double,position: Position): Props = Props(new Aircraft(uuid, speed, heading, position))
+  def props(uuid: UUID, speed: Double, heading: Double,position: Position): Props = Props(new AutonomousAircraft(uuid, speed, heading, position))
 
   def randomHeading():Double = {
     val randomDouble = random.nextDouble

@@ -15,7 +15,7 @@ import org.locationtech.spatial4j.context.SpatialContextFactory;
 public class ExtremeModule extends AbstractModule
 {
 	public static final String ORCHESTRATOR = "orchestrator";
-	public static final String AIRCRAFT_SERVER_ADDRESS = "http://localhost:8080/api/aircrafts/update";
+	public static final String AIRCRAFT_SERVER_ADDRESS = "actors.http://localhost:8080/api/aircrafts/update";
 	public static final String EVENTBUS_NAME = "positionChangedEventBus";
 
 	public static final double MAX_LONGITUDE = 180.0;

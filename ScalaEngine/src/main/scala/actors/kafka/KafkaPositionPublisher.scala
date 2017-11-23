@@ -1,15 +1,14 @@
-package kafka
+package actors.kafka
 
 import java.util.{Properties, UUID}
 
-import rapture.json.Json
 import akka.actor.Actor
 import akka.event.Logging
 import eventbus.PositionUpdateBus
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import position.Position
+import rapture.json.{Json, _}
 import rapture.json.jsonBackends.play._
-import rapture.json._
 
 class KafkaPositionPublisher extends Actor {
 

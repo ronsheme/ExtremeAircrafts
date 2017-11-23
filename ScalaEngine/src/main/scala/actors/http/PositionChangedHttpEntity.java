@@ -1,4 +1,4 @@
-package http;
+package actors.http;
 
 import java.util.UUID;
 
