@@ -14,7 +14,7 @@ class OpenskyAircraftsGenerator extends Actor with ActorLogging {
     case sv:StateVector =>
       val icao24 = sv.getIcao24
       if (icao24ToUuid.contains(icao24)){
-        context.child(icao24ToUuid.get(icao24).toString) match {
+        context.child(icao24ToUuid(icao24).toString) match {
           case Some(actorRef) => actorRef ! sv
           case None => log.info(s"icao24 $icao24 actor should exist but is was not found!")
         }
