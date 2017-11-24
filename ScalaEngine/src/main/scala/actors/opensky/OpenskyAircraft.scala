@@ -13,17 +13,17 @@ class OpenskyAircraft (uuid: UUID, var speed: Double, var heading: Double, var p
 
   override def receive: PartialFunction[Any, Unit] = {
     case state:StateVector =>
-      log.info(s"received state vector update")
+      log.debug(s"received state vector update")
       val newPos = new Position(state getLongitude,state getLatitude)
       speed = calcSpeed(position, newPos)
       heading = state getHeading()
       position = newPos
       publishPositionUpdate(uuid,position,heading)
-    case _  => log.info("received unknown message")
+    case _ => log.info("received unknown message ")
   }
 }
 
 object OpenskyAircraft {
   def calcSpeed(a:Position,b:Position):Double = Double.NaN //TODO: actually calculate speed
-  def props(uuid: UUID, stateVector: StateVector): Props = Props(new AutonomousAircraft(uuid, Double.NaN, stateVector getHeading, new Position(stateVector getLongitude, stateVector getLatitude)))
+  def props(uuid: UUID, stateVector: StateVector): Props = Props(new OpenskyAircraft(uuid, Double.NaN, stateVector getHeading, new Position(stateVector getLongitude, stateVector getLatitude)))
 }

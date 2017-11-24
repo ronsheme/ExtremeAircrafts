@@ -14,7 +14,7 @@ class Datasource{
    async autoUpdate(){
            while(true){
                this.update();
-               await this.sleep(1000);
+               await this.sleep(11000);
            }
        }
    constructor(){

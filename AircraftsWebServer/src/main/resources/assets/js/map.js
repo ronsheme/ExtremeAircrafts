@@ -54,7 +54,7 @@ map.on('load', function () {
                         }
                 }
                 }
-            }, 1500);
+            }, 10000);
 
 //aircrafts data source- both the points of the aircrafts and the trails arrive in the same geojson
 map.addSource('aircrafts', { type: 'geojson',data : url});

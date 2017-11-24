@@ -14,7 +14,9 @@ class OpenskyRequester(aircraftsGeneratorRef:ActorRef) extends Actor with ActorL
   override def receive: PartialFunction[Any, Unit] = {
     case RequestFullState =>
       Option(openskyApi.getStates(0, null)) match{
-        case Some(openSkyState) => openSkyState.getStates.forEach(sv=>aircraftsGeneratorRef!sv)
+        case Some(openSkyState) =>
+          log.info(s"received ${openSkyState.getStates.size} state vectors")
+          openSkyState.getStates.forEach(sv=>aircraftsGeneratorRef!sv)
         case None => log.info("received empty state vector collection")
       }
     case _ => log.info("received unknown message")

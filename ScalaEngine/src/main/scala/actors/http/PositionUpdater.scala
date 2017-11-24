@@ -26,7 +26,7 @@ class PositionUpdater extends Actor{
 
   override def receive: Receive = {
     case (uuid: UUID,position: position.Position,heading: Double) => {
-      log.info(s"Sending HTTP request with new position for aircraft $uuid")
+      log.debug(s"Sending HTTP request with new position for aircraft $uuid")
       Http().singleRequest(HttpRequest(method = HttpMethods.POST,uri = uri, entity = HttpEntity(ContentTypes.`application/json`,
         mapper.writeValueAsString(new PositionChangedHttpEntity(uuid,new Position(position.longitude,position.latitude,position.altitude),heading)))))
       //TODO continue
